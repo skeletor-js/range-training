@@ -5,7 +5,8 @@ import { goals, drills, drillAttempts } from '@/db/schema';
 import type { Goal, NewGoal } from '@/types';
 import type { GoalProgress } from '@/types';
 import { generateId } from '@/lib/utils';
-import { calculatePersonalBest, getAttemptValue, calculateGoalProgress, isGoalAchieved } from '@/lib/drillUtils';
+import { calculatePersonalBest, getAttemptValue } from '@/lib/drillUtils';
+import { calculateGoalProgress, isGoalAchieved } from '@/lib/goalUtils';
 
 interface GoalsState {
   // Cached data

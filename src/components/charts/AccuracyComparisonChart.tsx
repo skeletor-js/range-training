@@ -9,7 +9,7 @@ import {
   Cell,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatDrillValue } from '@/lib/drillUtils';
+import { formatDrillValue } from '@/lib/drillTrendUtils';
 import type { DrillAttempt, Firearm } from '@/types';
 
 interface FirearmStats {

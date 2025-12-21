@@ -1,4 +1,4 @@
-import { formatDrillValue } from '@/lib/drillUtils';
+import { formatDrillValue } from '@/lib/drillTrendUtils';
 import type { GoalProgress as GoalProgressType } from '@/types';
 
 interface GoalProgressProps {

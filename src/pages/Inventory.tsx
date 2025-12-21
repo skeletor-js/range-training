@@ -163,7 +163,7 @@ export function Inventory() {
     <div className="container max-w-2xl mx-auto px-4 py-8">
       <PageHeader
         title="Inventory"
-        description="Manage your firearms and ammunition"
+        description="Manage your armory and ammunition"
       />
 
       {error && (
@@ -175,7 +175,7 @@ export function Inventory() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between mb-4">
           <TabsList>
-            <TabsTrigger value="firearms">Firearms</TabsTrigger>
+            <TabsTrigger value="firearms">Armory</TabsTrigger>
             <TabsTrigger value="ammo">Ammo</TabsTrigger>
           </TabsList>
 

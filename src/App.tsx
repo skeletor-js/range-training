@@ -1,17 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Home as HomeIcon, CalendarDays, Package, Settings as SettingsIcon, Target } from 'lucide-react';
 import { initializeDatabase } from '@/db';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { Settings } from '@/pages/Settings';
-import { Inventory } from '@/pages/Inventory';
-import { Capture } from '@/pages/Capture';
-import { Home } from '@/pages/Home';
-import { Sessions } from '@/pages/Sessions';
-import { Training } from '@/pages/Training';
-import { DrillDetail } from '@/pages/DrillDetail';
 import { UpdateNotification, NetworkStatus } from '@/components/pwa';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { cn } from '@/lib/utils';
+
+// Lazy-loaded pages for code splitting
+const Home = lazy(() => import('@/pages/Home').then(m => ({ default: m.Home })));
+const Sessions = lazy(() => import('@/pages/Sessions').then(m => ({ default: m.Sessions })));
+const Training = lazy(() => import('@/pages/Training').then(m => ({ default: m.Training })));
+const DrillDetail = lazy(() => import('@/pages/DrillDetail').then(m => ({ default: m.DrillDetail })));
+const Inventory = lazy(() => import('@/pages/Inventory').then(m => ({ default: m.Inventory })));
+const Settings = lazy(() => import('@/pages/Settings').then(m => ({ default: m.Settings })));
+const Capture = lazy(() => import('@/pages/Capture').then(m => ({ default: m.Capture })));
 
 
 function Navigation() {
@@ -63,23 +66,27 @@ function AppContent() {
   // Full-screen routes without navigation
   if (location.pathname === '/capture') {
     return (
-      <Routes>
-        <Route path="/capture" element={<Capture />} />
-      </Routes>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/capture" element={<Capture />} />
+        </Routes>
+      </Suspense>
     );
   }
 
   return (
     <>
       <main className="pb-20">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sessions" element={<Sessions />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/drills/:id" element={<DrillDetail />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/sessions" element={<Sessions />} />
+            <Route path="/training" element={<Training />} />
+            <Route path="/drills/:id" element={<DrillDetail />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </Suspense>
       </main>
       <Navigation />
     </>
@@ -121,14 +128,7 @@ function App() {
   }
 
   if (!isReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

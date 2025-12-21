@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Timer, Keyboard } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -8,10 +7,8 @@ import {
   SheetFooter,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -19,7 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RetroLEDTimer } from '@/components/timer';
+import {
+  TimeScoringSection,
+  PointsScoringSection,
+  HitsScoringSection,
+  PassFailScoringSection,
+} from './scoring';
 import { drillAttemptSchema, type DrillAttemptFormData } from '@/lib/validations';
 import type { Drill, Firearm, Ammo } from '@/types';
 
@@ -141,186 +143,43 @@ export function DrillAttemptForm({
 
             {/* Time-based scoring */}
             {drill.scoringType === 'time' && (
-              <div className="space-y-4">
-                {/* Timer/Manual toggle */}
-                <div className="flex items-center gap-2 p-2 bg-muted rounded-lg">
-                  <Button
-                    type="button"
-                    variant={useTimer ? 'default' : 'ghost'}
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setUseTimer(true)}
-                  >
-                    <Timer className="h-4 w-4 mr-2" />
-                    Use Timer
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={!useTimer ? 'default' : 'ghost'}
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setUseTimer(false)}
-                  >
-                    <Keyboard className="h-4 w-4 mr-2" />
-                    Manual Entry
-                  </Button>
-                </div>
-
-                {useTimer ? (
-                  /* Retro LED Timer */
-                  <div className="flex flex-col items-center py-4">
-                    <RetroLEDTimer
-                      mode={drill.parTime ? 'countdown' : 'stopwatch'}
-                      initialSeconds={drill.parTime || 0}
-                      parTime={drill.parTime || undefined}
-                      color="amber"
-                      size="md"
-                      onTimeCapture={(seconds) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          timeSeconds: Math.round(seconds * 100) / 100,
-                        }))
-                      }
-                    />
-                    {formData.timeSeconds != null && (
-                      <div className="mt-4 text-center">
-                        <p className="text-sm text-muted-foreground">Captured Time</p>
-                        <p className="text-2xl font-mono font-bold text-primary">
-                          {formData.timeSeconds?.toFixed(2)}s
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  /* Manual time input */
-                  <div className="space-y-2">
-                    <Label htmlFor="timeSeconds">Time (seconds) *</Label>
-                    <Input
-                      id="timeSeconds"
-                      type="number"
-                      min={0}
-                      step={0.01}
-                      value={formData.timeSeconds ?? ''}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          timeSeconds: e.target.value ? parseFloat(e.target.value) : null,
-                        }))
-                      }
-                      placeholder="e.g., 2.35"
-                    />
-                  </div>
-                )}
-
-                {errors.timeSeconds && (
-                  <p className="text-xs text-destructive">{errors.timeSeconds}</p>
-                )}
-
-                {/* Misses field */}
-                <div className="space-y-2">
-                  <Label htmlFor="misses">Misses</Label>
-                  <Input
-                    id="misses"
-                    type="number"
-                    min={0}
-                    value={formData.misses ?? ''}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        misses: e.target.value ? parseInt(e.target.value) : null,
-                      }))
-                    }
-                    placeholder="0"
-                  />
-                </div>
-              </div>
+              <TimeScoringSection
+                drill={drill}
+                data={{ timeSeconds: formData.timeSeconds ?? null, misses: formData.misses ?? null }}
+                errors={errors}
+                useTimer={useTimer}
+                onUseTimerChange={setUseTimer}
+                onChange={(updates) => setFormData((prev) => ({ ...prev, ...updates }))}
+              />
             )}
 
             {/* Points-based scoring */}
             {drill.scoringType === 'points' && (
-              <div className="space-y-2">
-                <Label htmlFor="points">Points *</Label>
-                <Input
-                  id="points"
-                  type="number"
-                  min={0}
-                  max={drill.maxPoints ?? undefined}
-                  value={formData.points ?? ''}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      points: e.target.value ? parseInt(e.target.value) : null,
-                    }))
-                  }
-                  placeholder={drill.maxPoints ? `Max: ${drill.maxPoints}` : 'Enter points'}
-                />
-                {errors.points && (
-                  <p className="text-xs text-destructive">{errors.points}</p>
-                )}
-              </div>
+              <PointsScoringSection
+                drill={drill}
+                points={formData.points ?? null}
+                error={errors.points}
+                onChange={(points) => setFormData((prev) => ({ ...prev, points }))}
+              />
             )}
 
             {/* Hits-based scoring */}
             {drill.scoringType === 'hits' && (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="hits">Hits *</Label>
-                  <Input
-                    id="hits"
-                    type="number"
-                    min={0}
-                    max={drill.roundCount}
-                    value={formData.hits ?? ''}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        hits: e.target.value ? parseInt(e.target.value) : null,
-                      }))
-                    }
-                    placeholder={`Max: ${drill.roundCount}`}
-                  />
-                  {errors.hits && (
-                    <p className="text-xs text-destructive">{errors.hits}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="misses">Misses</Label>
-                  <Input
-                    id="misses"
-                    type="number"
-                    min={0}
-                    value={formData.misses ?? ''}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        misses: e.target.value ? parseInt(e.target.value) : null,
-                      }))
-                    }
-                    placeholder="0"
-                  />
-                </div>
-              </div>
+              <HitsScoringSection
+                drill={drill}
+                data={{ hits: formData.hits ?? null, misses: formData.misses ?? null }}
+                errors={errors}
+                onChange={(updates) => setFormData((prev) => ({ ...prev, ...updates }))}
+              />
             )}
 
             {/* Pass/Fail scoring */}
             {drill.scoringType === 'pass_fail' && (
-              <div className="flex items-center space-x-3">
-                <Label htmlFor="passed">Did you pass?</Label>
-                <Switch
-                  id="passed"
-                  checked={formData.passed ?? false}
-                  onCheckedChange={(checked) =>
-                    setFormData((prev) => ({ ...prev, passed: checked }))
-                  }
-                />
-                <span className="text-sm text-muted-foreground">
-                  {formData.passed ? 'Pass' : 'Fail'}
-                </span>
-                {errors.passed && (
-                  <p className="text-xs text-destructive">{errors.passed}</p>
-                )}
-              </div>
+              <PassFailScoringSection
+                passed={formData.passed ?? null}
+                error={errors.passed}
+                onChange={(passed) => setFormData((prev) => ({ ...prev, passed }))}
+              />
             )}
 
             {/* Optional: Firearm selection */}

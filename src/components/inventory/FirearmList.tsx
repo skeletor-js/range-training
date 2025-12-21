@@ -43,17 +43,44 @@ export function FirearmList({
     {} as Record<string, Firearm[]>
   );
 
-  const typeOrder = ['handgun', 'rifle', 'shotgun', 'other'];
+  const typeOrder = [
+    // Firearms
+    'handgun', 'rifle', 'shotgun', 'sbr', 'pcc',
+    // Air-powered
+    'air_rifle', 'air_pistol',
+    // Black powder
+    'bp_rifle', 'bp_pistol', 'bp_shotgun',
+    // Other
+    'other',
+  ];
   const sortedTypes = Object.keys(grouped).sort(
     (a, b) => typeOrder.indexOf(a) - typeOrder.indexOf(b)
   );
+
+  // Helper to format type labels for section headers
+  const formatTypeHeader = (type: string): string => {
+    const labels: Record<string, string> = {
+      handgun: 'Handguns',
+      rifle: 'Rifles',
+      shotgun: 'Shotguns',
+      sbr: 'SBRs',
+      pcc: 'PCCs',
+      air_rifle: 'Air Rifles',
+      air_pistol: 'Air Pistols',
+      bp_rifle: 'Black Powder Rifles',
+      bp_pistol: 'Black Powder Pistols',
+      bp_shotgun: 'Black Powder Shotguns',
+      other: 'Other',
+    };
+    return labels[type] ?? type;
+  };
 
   return (
     <div className="space-y-6">
       {sortedTypes.map((type) => (
         <div key={type}>
-          <h3 className="text-sm font-medium text-muted-foreground mb-3 capitalize">
-            {type === 'other' ? 'Other' : `${type}s`}
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">
+            {formatTypeHeader(type)}
           </h3>
           <div className="space-y-3">
             {grouped[type].map((firearm) => (

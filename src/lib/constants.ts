@@ -22,10 +22,39 @@ export const CALIBERS = [
   '12 Gauge',
   '20 Gauge',
   '.410 Bore',
+  // Air gun
+  '.177 (Air)',
+  '.20 (Air)',
+  '.22 (Air)',
+  '.25 (Air)',
+  '.30 (Air)',
+  // Black powder
+  '.36 BP',
+  '.44 BP',
+  '.45 BP',
+  '.50 BP',
+  '.54 BP',
+  '.58 BP',
 ] as const;
 
-// Firearm types
-export const FIREARM_TYPES = ['handgun', 'rifle', 'shotgun', 'sbr', 'pcc', 'other'] as const;
+// Firearm/weapon types
+export const FIREARM_TYPES = [
+  // Traditional firearms
+  'handgun',
+  'rifle',
+  'shotgun',
+  'sbr',
+  'pcc',
+  // Air-powered
+  'air_rifle',
+  'air_pistol',
+  // Black powder
+  'bp_rifle',
+  'bp_pistol',
+  'bp_shotgun',
+  // Other
+  'other',
+] as const;
 export type FirearmType = (typeof FIREARM_TYPES)[number];
 export const FIREARM_TYPE_LABELS: Record<FirearmType, string> = {
   handgun: 'Handgun',
@@ -33,6 +62,11 @@ export const FIREARM_TYPE_LABELS: Record<FirearmType, string> = {
   shotgun: 'Shotgun',
   sbr: 'SBR',
   pcc: 'PCC',
+  air_rifle: 'Air Rifle',
+  air_pistol: 'Air Pistol',
+  bp_rifle: 'Black Powder Rifle',
+  bp_pistol: 'Black Powder Pistol',
+  bp_shotgun: 'Black Powder Shotgun',
   other: 'Other',
 };
 

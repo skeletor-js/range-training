@@ -5,7 +5,8 @@ import { drills, drillAttempts, drillBenchmarks, sessions } from '@/db/schema';
 import type { Drill, NewDrill, DrillAttempt, NewDrillAttempt, DrillBenchmark } from '@/types';
 import type { DrillWithStats, TrendDataPoint } from '@/types';
 import { generateId } from '@/lib/utils';
-import { calculatePersonalBest, generateTrendData } from '@/lib/drillUtils';
+import { calculatePersonalBest } from '@/lib/drillUtils';
+import { generateTrendData } from '@/lib/drillTrendUtils';
 
 interface DrillState {
   // Cached data

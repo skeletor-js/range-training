@@ -1,11 +1,11 @@
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
-// Firearms Library
+// Armory (Firearms, Air Guns, Black Powder)
 export const firearms = sqliteTable('firearms', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
-  type: text('type', { enum: ['handgun', 'rifle', 'shotgun', 'sbr', 'pcc', 'other'] }),
+  type: text('type', { enum: ['handgun', 'rifle', 'shotgun', 'sbr', 'pcc', 'air_rifle', 'air_pistol', 'bp_rifle', 'bp_pistol', 'bp_shotgun', 'other'] }),
   caliber: text('caliber').notNull(),
   manufacturer: text('manufacturer'),
   model: text('model'),

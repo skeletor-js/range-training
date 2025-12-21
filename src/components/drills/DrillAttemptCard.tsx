@@ -1,7 +1,8 @@
 import { Trophy, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { formatDrillValue, formatFullDate } from '@/lib/drillUtils';
+import { formatDrillValue } from '@/lib/drillTrendUtils';
+import { formatFullDate } from '@/lib/formatUtils';
 import type { DrillAttempt, Firearm, Ammo } from '@/types';
 
 interface DrillAttemptCardProps {

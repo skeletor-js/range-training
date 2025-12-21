@@ -7,7 +7,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatShortDate, formatDrillValue } from '@/lib/drillUtils';
+import { formatDrillValue } from '@/lib/drillTrendUtils';
+import { formatShortDate } from '@/lib/formatUtils';
 import type { TrendDataPoint } from '@/types';
 
 interface DrillTrendChartProps {

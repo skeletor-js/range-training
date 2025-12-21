@@ -1,6 +1,6 @@
 import { Trophy } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { formatDrillValue } from '@/lib/drillUtils';
+import { formatDrillValue } from '@/lib/drillTrendUtils';
 import type { DrillAttempt } from '@/types';
 
 interface PersonalBestBadgeProps {

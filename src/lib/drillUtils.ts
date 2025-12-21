@@ -1,5 +1,4 @@
 import type { DrillAttempt } from '@/db/schema';
-import type { TrendDataPoint } from '@/types';
 
 type ScoringType = 'time' | 'points' | 'pass_fail' | 'hits';
 
@@ -78,7 +77,7 @@ export function getAttemptValue(
 /**
  * Check if a value is better than another based on scoring type
  */
-function isValueBetterThan(
+export function isValueBetterThan(
   value: number | null,
   currentBest: number | null,
   scoringType: ScoringType
@@ -117,143 +116,4 @@ export function isNewPersonalBest(
   const pbValue = getAttemptValue(currentPB, scoringType);
 
   return isValueBetterThan(attemptValue, pbValue, scoringType);
-}
-
-/**
- * Generate trend data points for charting from a list of attempts
- */
-export function generateTrendData(
-  attempts: DrillAttempt[],
-  scoringType: ScoringType | null
-): TrendDataPoint[] {
-  if (!scoringType || attempts.length === 0) return [];
-
-  // Sort by date ascending
-  const sorted = [...attempts].sort(
-    (a, b) => new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime()
-  );
-
-  let currentBest: number | null = null;
-
-  return sorted
-    .map((attempt) => {
-      const value = getAttemptValue(attempt, scoringType);
-      if (value === null) return null;
-
-      const isPB = isValueBetterThan(value, currentBest, scoringType);
-      if (isPB) currentBest = value;
-
-      return {
-        date: attempt.createdAt!,
-        value,
-        isPB,
-        attemptId: attempt.id,
-      };
-    })
-    .filter((point): point is TrendDataPoint => point !== null);
-}
-
-/**
- * Format a drill value for display based on scoring type
- */
-export function formatDrillValue(
-  value: number | null | undefined,
-  scoringType: ScoringType | null
-): string {
-  if (value === null || value === undefined) return '-';
-  if (!scoringType) return String(value);
-
-  switch (scoringType) {
-    case 'time':
-      return `${value.toFixed(2)}s`;
-    case 'points':
-      return `${value} pts`;
-    case 'hits':
-      return `${value} hits`;
-    case 'pass_fail':
-      return value === 1 ? 'Pass' : 'Fail';
-    default:
-      return String(value);
-  }
-}
-
-/**
- * Format a date for display in charts
- */
-export function formatShortDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-/**
- * Format a full date for tooltips
- */
-export function formatFullDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
-/**
- * Calculate goal progress percentage
- */
-export function calculateGoalProgress(
-  targetScore: number,
-  currentBest: number | null,
-  scoringType: ScoringType | null
-): number {
-  if (currentBest === null || !scoringType) return 0;
-
-  switch (scoringType) {
-    case 'time':
-      // For time, lower is better, so progress = target / current
-      // If current is already better than target, return 100
-      if (currentBest <= targetScore) return 100;
-      // Progress increases as current gets closer to target
-      return Math.min(100, (targetScore / currentBest) * 100);
-
-    case 'points':
-    case 'hits':
-      // For points/hits, higher is better
-      if (currentBest >= targetScore) return 100;
-      return Math.min(100, (currentBest / targetScore) * 100);
-
-    case 'pass_fail':
-      // Binary - either passed or not
-      return currentBest === 1 ? 100 : 0;
-
-    default:
-      return 0;
-  }
-}
-
-/**
- * Check if a goal is achieved based on current best and target
- */
-export function isGoalAchieved(
-  targetScore: number,
-  currentBest: number | null,
-  scoringType: ScoringType | null
-): boolean {
-  if (currentBest === null || !scoringType) return false;
-
-  switch (scoringType) {
-    case 'time':
-      // For time, lower is better
-      return currentBest <= targetScore;
-
-    case 'points':
-    case 'hits':
-      // For points/hits, higher is better
-      return currentBest >= targetScore;
-
-    case 'pass_fail':
-      return currentBest === 1;
-
-    default:
-      return false;
-  }
 }
