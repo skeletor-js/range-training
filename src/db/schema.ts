@@ -5,7 +5,7 @@ import { sql } from 'drizzle-orm';
 export const firearms = sqliteTable('firearms', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
-  type: text('type', { enum: ['handgun', 'rifle', 'shotgun', 'other'] }),
+  type: text('type', { enum: ['handgun', 'rifle', 'shotgun', 'sbr', 'pcc', 'other'] }),
   caliber: text('caliber').notNull(),
   manufacturer: text('manufacturer'),
   model: text('model'),

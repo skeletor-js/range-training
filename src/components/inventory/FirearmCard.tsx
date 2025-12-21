@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Firearm } from '@/types';
+import { FIREARM_TYPE_LABELS } from '@/lib/constants';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +28,7 @@ export function FirearmCard({
   onViewCompatibility,
 }: FirearmCardProps) {
   const typeLabel = firearm.type
-    ? firearm.type.charAt(0).toUpperCase() + firearm.type.slice(1)
+    ? FIREARM_TYPE_LABELS[firearm.type]
     : 'Other';
 
   return (

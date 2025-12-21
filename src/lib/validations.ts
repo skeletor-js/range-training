@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { FIREARM_TYPES } from './constants';
 
 // Firearm validation schema
 export const firearmSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100),
-  type: z.enum(['handgun', 'rifle', 'shotgun', 'other']).nullable().optional(),
+  type: z.enum(FIREARM_TYPES).nullable().optional(),
   caliber: z.string().min(1, 'Caliber is required'),
   manufacturer: z.string().max(100).nullable().optional(),
   model: z.string().max(100).nullable().optional(),

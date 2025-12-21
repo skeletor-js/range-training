@@ -25,8 +25,16 @@ export const CALIBERS = [
 ] as const;
 
 // Firearm types
-export const FIREARM_TYPES = ['handgun', 'rifle', 'shotgun', 'other'] as const;
+export const FIREARM_TYPES = ['handgun', 'rifle', 'shotgun', 'sbr', 'pcc', 'other'] as const;
 export type FirearmType = (typeof FIREARM_TYPES)[number];
+export const FIREARM_TYPE_LABELS: Record<FirearmType, string> = {
+  handgun: 'Handgun',
+  rifle: 'Rifle',
+  shotgun: 'Shotgun',
+  sbr: 'SBR',
+  pcc: 'PCC',
+  other: 'Other',
+};
 
 // Weather conditions
 export const WEATHER_CONDITIONS = [
