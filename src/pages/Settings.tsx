@@ -9,6 +9,7 @@ import {
   ImportSection,
   DisplaySettingsCard,
   AboutCard,
+  ThemeSettingsCard,
 } from '@/components/settings';
 
 interface DatabaseStats {
@@ -32,9 +33,13 @@ export function Settings() {
     highGlareMode,
     soundEnabled,
     hapticEnabled,
+    shotDetectionEnabled,
+    shotDetectionSensitivity,
     toggleHighGlareMode,
     toggleSound,
     toggleHaptic,
+    toggleShotDetection,
+    setShotDetectionSensitivity,
   } = useSettingsStore();
 
   useEffect(() => {
@@ -138,13 +143,19 @@ export function Settings() {
         <InstallPrompt />
       </div>
 
+      <ThemeSettingsCard />
+
       <DisplaySettingsCard
         highGlareMode={highGlareMode}
         soundEnabled={soundEnabled}
         hapticEnabled={hapticEnabled}
+        shotDetectionEnabled={shotDetectionEnabled}
+        shotDetectionSensitivity={shotDetectionSensitivity}
         onToggleHighGlare={toggleHighGlareMode}
         onToggleSound={toggleSound}
         onToggleHaptic={toggleHaptic}
+        onToggleShotDetection={toggleShotDetection}
+        onShotDetectionSensitivityChange={setShotDetectionSensitivity}
       />
 
       <AboutCard />

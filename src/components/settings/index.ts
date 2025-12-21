@@ -3,3 +3,6 @@ export { ExportSection } from './ExportSection';
 export { ImportSection } from './ImportSection';
 export { DisplaySettingsCard } from './DisplaySettingsCard';
 export { AboutCard } from './AboutCard';
+export { ThemeSettingsCard } from './ThemeSettingsCard';
+export { ColorPicker } from './ColorPicker';
+export { ThemePreview } from './ThemePreview';

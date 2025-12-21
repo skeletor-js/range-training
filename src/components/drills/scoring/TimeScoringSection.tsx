@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RetroLEDTimer } from '@/components/timer';
+import { useSettingsStore } from '@/stores/settingsStore';
 import type { Drill } from '@/types';
 
 interface TimeScoringData {
@@ -27,6 +28,13 @@ export function TimeScoringSection({
   onUseTimerChange,
   onChange,
 }: TimeScoringProps) {
+  const {
+    delayMode,
+    fixedDelay,
+    randomDelayMin,
+    randomDelayMax,
+  } = useSettingsStore();
+
   return (
     <div className="space-y-4">
       {/* Timer/Manual toggle */}
@@ -62,6 +70,10 @@ export function TimeScoringSection({
             parTime={drill.parTime || undefined}
             color="amber"
             size="md"
+            delayMode={delayMode}
+            fixedDelay={fixedDelay}
+            randomDelayMin={randomDelayMin}
+            randomDelayMax={randomDelayMax}
             onTimeCapture={(seconds) =>
               onChange({ timeSeconds: Math.round(seconds * 100) / 100 })
             }

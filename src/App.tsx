@@ -6,6 +6,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { UpdateNotification, NetworkStatus } from '@/components/pwa';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { cn } from '@/lib/utils';
+import { applyTheme, getPresetTheme } from '@/lib/themeUtils';
 
 // Lazy-loaded pages for code splitting
 const Home = lazy(() => import('@/pages/Home').then(m => ({ default: m.Home })));
@@ -100,11 +101,25 @@ function App() {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const highGlareMode = useSettingsStore((state) => state.highGlareMode);
+  const currentTheme = useSettingsStore((state) => state.currentTheme);
+  const customTheme = useSettingsStore((state) => state.customTheme);
 
   // Apply high-glare mode class to document
   useEffect(() => {
     document.documentElement.classList.toggle('high-glare', highGlareMode);
   }, [highGlareMode]);
+
+  // Apply theme to document
+  useEffect(() => {
+    if (currentTheme === 'Custom' && customTheme) {
+      applyTheme(customTheme);
+    } else {
+      const presetTheme = getPresetTheme(currentTheme);
+      if (presetTheme) {
+        applyTheme(presetTheme);
+      }
+    }
+  }, [currentTheme, customTheme]);
 
   useEffect(() => {
     async function init() {
