@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS schema_version (
 );
 `;
 
-const CURRENT_SCHEMA_VERSION = 3;
+const CURRENT_SCHEMA_VERSION = 4;
 
 /**
  * Initialize the database, creating tables if they don't exist
@@ -322,6 +322,36 @@ async function runMigrations(fromVersion: number, toVersion: number): Promise<vo
     console.log('[DB] Applying migration v3: Seeding built-in drills');
     await seedBuiltinDrills();
     await db.run(sql`INSERT INTO schema_version (version) VALUES (3)`);
+  }
+
+  // v3 -> v4: Add performance indexes
+  if (fromVersion < 4) {
+    console.log('[DB] Applying migration v4: Adding performance indexes');
+
+    // Session queries
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_sessions_date ON sessions(date)`);
+
+    // Target queries
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_targets_session ON targets(session_id)`);
+
+    // Shot queries
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_shots_target ON shots(target_id)`);
+
+    // Drill attempt queries
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_drill_attempts_drill ON drill_attempts(drill_id)`);
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_drill_attempts_session ON drill_attempts(session_id)`);
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_drill_attempts_firearm ON drill_attempts(firearm_id)`);
+
+    // Ammo purchase queries
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_ammo_purchases_ammo ON ammo_purchases(ammo_id)`);
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_ammo_purchases_date ON ammo_purchases(purchase_date)`);
+
+    // Session firearms/ammo queries
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_session_firearms_session ON session_firearms(session_id)`);
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_session_ammo_sf ON session_ammo(session_firearm_id)`);
+
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (4)`);
+    console.log('[DB] Performance indexes created');
   }
 
   console.log('[DB] Migrations complete');
