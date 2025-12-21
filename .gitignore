@@ -54,4 +54,3 @@ coverage
 gha-creds-*.json
 
 # Claude AI context
-claude.md
