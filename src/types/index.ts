@@ -160,3 +160,57 @@ export interface DashboardStats {
   longestStreak: number;
   lastSessionDate: string | null;
 }
+
+// Drill with computed stats for display
+export interface DrillWithStats {
+  id: string;
+  name: string;
+  description: string | null;
+  category: 'speed' | 'accuracy' | 'movement' | 'reload' | 'other' | null;
+  scoringType: 'time' | 'points' | 'pass_fail' | 'hits' | null;
+  parTime: number | null;
+  maxPoints: number | null;
+  roundCount: number;
+  targetCount: number | null;
+  distanceYards: number | null;
+  isBuiltin: boolean | null;
+  createdAt: string | null;
+  attemptCount: number;
+  personalBest: import('@/db/schema').DrillAttempt | null;
+  lastAttemptDate: string | null;
+}
+
+// Trend chart data point
+export interface TrendDataPoint {
+  date: string;
+  value: number;
+  isPB: boolean;
+  attemptId: string;
+}
+
+// Goal progress for drill-linked goals
+export interface GoalProgress {
+  goalId: string;
+  drillId: string;
+  drillName: string;
+  targetScore: number;
+  currentBest: number | null;
+  percentComplete: number;
+  isAchieved: boolean;
+  scoringType: 'time' | 'points' | 'pass_fail' | 'hits' | null;
+}
+
+// Built-in drill definition (from JSON)
+export interface BuiltinDrillDefinition {
+  id: string;
+  name: string;
+  description: string;
+  category: 'speed' | 'accuracy' | 'movement' | 'reload' | 'other';
+  scoringType: 'time' | 'points' | 'pass_fail' | 'hits';
+  parTime: number | null;
+  maxPoints: number | null;
+  roundCount: number;
+  targetCount: number;
+  distanceYards: number | null;
+  benchmarks: { level: string; threshold: number }[];
+}

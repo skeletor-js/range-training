@@ -84,6 +84,49 @@ export const compatibilitySchema = z.object({
 
 export type CompatibilityFormData = z.infer<typeof compatibilitySchema>;
 
+// Drill validation schema
+export const drillSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  description: z.string().max(1000).nullable().optional(),
+  category: z.enum(['speed', 'accuracy', 'movement', 'reload', 'other']),
+  scoringType: z.enum(['time', 'points', 'pass_fail', 'hits']),
+  parTime: z.number().positive().nullable().optional(),
+  maxPoints: z.number().int().positive().nullable().optional(),
+  roundCount: z.number().int().positive('Round count must be at least 1'),
+  targetCount: z.number().int().positive().default(1),
+  distanceYards: z.number().positive().nullable().optional(),
+});
+
+export type DrillFormData = z.infer<typeof drillSchema>;
+
+// Drill attempt validation schema
+export const drillAttemptSchema = z.object({
+  drillId: z.string().min(1, 'Drill is required'),
+  sessionId: z.string().nullable().optional(),
+  timeSeconds: z.number().positive().nullable().optional(),
+  points: z.number().int().nullable().optional(),
+  hits: z.number().int().min(0).nullable().optional(),
+  misses: z.number().int().min(0).nullable().optional(),
+  passed: z.boolean().nullable().optional(),
+  targetId: z.string().nullable().optional(),
+  firearmId: z.string().nullable().optional(),
+  ammoId: z.string().nullable().optional(),
+  notes: z.string().max(500).nullable().optional(),
+});
+
+export type DrillAttemptFormData = z.infer<typeof drillAttemptSchema>;
+
+// Goal validation schema
+export const goalSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(100),
+  description: z.string().max(500).nullable().optional(),
+  targetDate: z.string().nullable().optional(),
+  linkedDrillId: z.string().nullable().optional(),
+  targetScore: z.number().nullable().optional(),
+});
+
+export type GoalFormData = z.infer<typeof goalSchema>;
+
 // Helper to validate form data
 export function validateForm<T>(
   schema: z.ZodSchema<T>,

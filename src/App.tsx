@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Home as HomeIcon, CalendarDays, Package, Settings as SettingsIcon } from 'lucide-react';
+import { Home as HomeIcon, CalendarDays, Package, Settings as SettingsIcon, Target } from 'lucide-react';
 import { initializeDatabase } from '@/db';
 import { Settings } from '@/pages/Settings';
 import { Inventory } from '@/pages/Inventory';
 import { Capture } from '@/pages/Capture';
 import { Home } from '@/pages/Home';
 import { Sessions } from '@/pages/Sessions';
+import { Training } from '@/pages/Training';
+import { DrillDetail } from '@/pages/DrillDetail';
 import { cn } from '@/lib/utils';
 
 
@@ -16,6 +18,7 @@ function Navigation() {
   const navItems = [
     { path: '/', icon: HomeIcon, label: 'Home' },
     { path: '/sessions', icon: CalendarDays, label: 'Sessions' },
+    { path: '/training', icon: Target, label: 'Training' },
     { path: '/inventory', icon: Package, label: 'Inventory' },
     { path: '/settings', icon: SettingsIcon, label: 'Settings' },
   ];
@@ -24,7 +27,10 @@ function Navigation() {
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom">
       <div className="flex justify-around items-center h-16">
         {navItems.map(({ path, icon: Icon, label }) => {
-          const isActive = location.pathname === path;
+          // Check if current path matches or starts with the nav path (for nested routes)
+          const isActive =
+            location.pathname === path ||
+            (path === '/training' && location.pathname.startsWith('/drills'));
           return (
             <Link
               key={path}
@@ -64,6 +70,8 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sessions" element={<Sessions />} />
+          <Route path="/training" element={<Training />} />
+          <Route path="/drills/:id" element={<DrillDetail />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

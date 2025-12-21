@@ -1,0 +1,164 @@
+{
+  "drills": [
+    {
+      "id": "builtin-bill-drill",
+      "name": "Bill Drill",
+      "description": "Draw and fire 6 rounds at a single target as fast as possible while maintaining all hits in the A-zone. Tests draw speed, trigger control, and recoil management.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 2.0,
+      "maxPoints": null,
+      "roundCount": 6,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 4.0 },
+        { "level": "Intermediate", "threshold": 3.0 },
+        { "level": "Advanced", "threshold": 2.5 },
+        { "level": "Expert", "threshold": 2.0 }
+      ]
+    },
+    {
+      "id": "builtin-failure-drill",
+      "name": "Failure Drill (Mozambique)",
+      "description": "Two shots to the body, one to the head. Also known as the Mozambique Drill. Tests transition speed and precision under stress.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 2.5,
+      "maxPoints": null,
+      "roundCount": 3,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 4.0 },
+        { "level": "Intermediate", "threshold": 3.0 },
+        { "level": "Advanced", "threshold": 2.5 },
+        { "level": "Expert", "threshold": 2.0 }
+      ]
+    },
+    {
+      "id": "builtin-draw-first-shot",
+      "name": "Draw to First Shot",
+      "description": "From concealment, draw and fire one accurate shot. Measures pure draw speed to first accurate hit on target.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 1.5,
+      "maxPoints": null,
+      "roundCount": 1,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 2.5 },
+        { "level": "Intermediate", "threshold": 2.0 },
+        { "level": "Advanced", "threshold": 1.5 },
+        { "level": "Expert", "threshold": 1.0 }
+      ]
+    },
+    {
+      "id": "builtin-dot-torture",
+      "name": "Dot Torture",
+      "description": "50 rounds on 10 small circles at 3 yards. Must hit all 50 to pass. The ultimate accuracy and trigger control test. Start at 3 yards and move back as you master each distance.",
+      "category": "accuracy",
+      "scoringType": "pass_fail",
+      "parTime": null,
+      "maxPoints": null,
+      "roundCount": 50,
+      "targetCount": 10,
+      "distanceYards": 3,
+      "benchmarks": [
+        { "level": "Pass at 3 yards", "threshold": 1 },
+        { "level": "Pass at 5 yards", "threshold": 1 },
+        { "level": "Pass at 7 yards", "threshold": 1 }
+      ]
+    },
+    {
+      "id": "builtin-5x5",
+      "name": "5x5 Drill",
+      "description": "5 shots, 5 seconds, 5-inch circle, 5 yards. From the holster, draw and place all 5 shots within a 5-inch circle in 5 seconds or less.",
+      "category": "accuracy",
+      "scoringType": "time",
+      "parTime": 5.0,
+      "maxPoints": null,
+      "roundCount": 5,
+      "targetCount": 1,
+      "distanceYards": 5,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 7.0 },
+        { "level": "Intermediate", "threshold": 5.0 },
+        { "level": "Advanced", "threshold": 4.0 },
+        { "level": "Expert", "threshold": 3.0 }
+      ]
+    },
+    {
+      "id": "builtin-10-10-10",
+      "name": "10-10-10 Drill",
+      "description": "10 rounds, 10-inch circle, 10 yards in 10 seconds. A simple accuracy standard that tests consistency under mild time pressure.",
+      "category": "accuracy",
+      "scoringType": "time",
+      "parTime": 10.0,
+      "maxPoints": null,
+      "roundCount": 10,
+      "targetCount": 1,
+      "distanceYards": 10,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 15.0 },
+        { "level": "Intermediate", "threshold": 10.0 },
+        { "level": "Advanced", "threshold": 8.0 },
+        { "level": "Expert", "threshold": 6.0 }
+      ]
+    },
+    {
+      "id": "builtin-fast-drill",
+      "name": "FAST Drill",
+      "description": "Fundamentals, Accuracy, and Speed Test. Draw, fire 2 shots on a 3x5 head box, reload, then 4 shots on an 8-inch body circle from 7 yards. All hits required.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": null,
+      "maxPoints": null,
+      "roundCount": 6,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 10.0 },
+        { "level": "Intermediate", "threshold": 7.0 },
+        { "level": "Advanced", "threshold": 5.0 },
+        { "level": "Expert", "threshold": 4.0 }
+      ]
+    },
+    {
+      "id": "builtin-el-presidente",
+      "name": "El Presidente",
+      "description": "Classic competition drill. Start facing away from 3 targets at 10 yards. On signal, turn, draw, and engage each target with 2 shots, reload, and engage each target with 2 more shots.",
+      "category": "movement",
+      "scoringType": "time",
+      "parTime": 10.0,
+      "maxPoints": null,
+      "roundCount": 12,
+      "targetCount": 3,
+      "distanceYards": 10,
+      "benchmarks": [
+        { "level": "Novice", "threshold": 15.0 },
+        { "level": "Intermediate", "threshold": 10.0 },
+        { "level": "Advanced", "threshold": 8.0 },
+        { "level": "Expert", "threshold": 6.0 }
+      ]
+    },
+    {
+      "id": "builtin-casino-drill",
+      "name": "Casino Drill",
+      "description": "21 rounds at varying distances: 1 shot at 21 yards, 2 shots at 14 yards, 3 at 10 yards, 4 at 7 yards, 5 at 5 yards, and 6 at 3 yards. Tests accuracy across distances.",
+      "category": "other",
+      "scoringType": "points",
+      "parTime": null,
+      "maxPoints": 21,
+      "roundCount": 21,
+      "targetCount": 1,
+      "distanceYards": null,
+      "benchmarks": [
+        { "level": "Passing", "threshold": 17 },
+        { "level": "Good", "threshold": 19 },
+        { "level": "Excellent", "threshold": 21 }
+      ]
+    }
+  ]
+}

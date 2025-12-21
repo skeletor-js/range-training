@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS schema_version (
 );
 `;
 
-const CURRENT_SCHEMA_VERSION = 2;
+const CURRENT_SCHEMA_VERSION = 3;
 
 /**
  * Initialize the database, creating tables if they don't exist
@@ -317,7 +317,65 @@ async function runMigrations(fromVersion: number, toVersion: number): Promise<vo
     await db.run(sql`INSERT INTO schema_version (version) VALUES (2)`);
   }
 
+  // v2 -> v3: Seed built-in drills
+  if (fromVersion < 3) {
+    console.log('[DB] Applying migration v3: Seeding built-in drills');
+    await seedBuiltinDrills();
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (3)`);
+  }
+
   console.log('[DB] Migrations complete');
+}
+
+/**
+ * Seed built-in drills from JSON data
+ */
+async function seedBuiltinDrills(): Promise<void> {
+  // Import the built-in drills data
+  const builtinDrillsData = await import('@/data/builtinDrills.json');
+  const drillsData = builtinDrillsData.drills;
+
+  for (const drill of drillsData) {
+    // Check if drill already exists
+    const existing = await db.all(sql`
+      SELECT id FROM drills WHERE id = ${drill.id}
+    `);
+
+    if (existing.length === 0) {
+      // Insert the drill
+      await db.run(sql`
+        INSERT INTO drills (
+          id, name, description, category, scoring_type,
+          par_time, max_points, round_count, target_count,
+          distance_yards, is_builtin, created_at
+        ) VALUES (
+          ${drill.id},
+          ${drill.name},
+          ${drill.description},
+          ${drill.category},
+          ${drill.scoringType},
+          ${drill.parTime},
+          ${drill.maxPoints},
+          ${drill.roundCount},
+          ${drill.targetCount},
+          ${drill.distanceYards},
+          1,
+          datetime('now')
+        )
+      `);
+
+      // Insert benchmarks for this drill
+      for (const benchmark of drill.benchmarks) {
+        const benchmarkId = crypto.randomUUID();
+        await db.run(sql`
+          INSERT INTO drill_benchmarks (id, drill_id, level, threshold)
+          VALUES (${benchmarkId}, ${drill.id}, ${benchmark.level}, ${benchmark.threshold})
+        `);
+      }
+    }
+  }
+
+  console.log(`[DB] Seeded ${drillsData.length} built-in drills`);
 }
 
 /**

@@ -102,3 +102,28 @@ export const COMMON_DISTANCES = [3, 5, 7, 10, 15, 25, 50, 100] as const;
 
 // MOA constant (1 MOA = 1.047 inches at 100 yards)
 export const MOA_INCHES_AT_100_YARDS = 1.047;
+
+// Drill categories
+export const DRILL_CATEGORIES = ['speed', 'accuracy', 'movement', 'reload', 'other'] as const;
+export type DrillCategory = (typeof DRILL_CATEGORIES)[number];
+
+// Drill scoring types
+export const SCORING_TYPES = ['time', 'points', 'pass_fail', 'hits'] as const;
+export type ScoringType = (typeof SCORING_TYPES)[number];
+
+// Drill category display names
+export const DRILL_CATEGORY_LABELS: Record<DrillCategory, string> = {
+  speed: 'Speed',
+  accuracy: 'Accuracy',
+  movement: 'Movement',
+  reload: 'Reload',
+  other: 'Other',
+};
+
+// Scoring type display names
+export const SCORING_TYPE_LABELS: Record<ScoringType, string> = {
+  time: 'Time',
+  points: 'Points',
+  pass_fail: 'Pass/Fail',
+  hits: 'Hits',
+};
