@@ -335,7 +335,12 @@ export function ThemeSettingsCard() {
 
         {/* Theme Preview */}
         <div>
-          <ThemePreview />
+          <ThemePreview
+            customTheme={customTheme}
+            currentTheme={currentTheme}
+            onColorChange={updateThemeColor}
+            onInitCustomTheme={handleCustomize}
+          />
         </div>
 
         {/* Import/Export Buttons */}
