@@ -7,6 +7,8 @@ import { UpdateNotification, NetworkStatus } from '@/components/pwa';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { cn } from '@/lib/utils';
 import { applyTheme, getPresetTheme } from '@/lib/themeUtils';
+import { generateHighContrastTheme } from '@/lib/contrastUtils';
+import type { Theme } from '@/lib/themes';
 
 // Lazy-loaded pages for code splitting
 const Home = lazy(() => import('@/pages/Home').then(m => ({ default: m.Home })));
@@ -104,22 +106,27 @@ function App() {
   const currentTheme = useSettingsStore((state) => state.currentTheme);
   const customTheme = useSettingsStore((state) => state.customTheme);
 
-  // Apply high-glare mode class to document
+  // Apply theme and high-glare mode
   useEffect(() => {
-    document.documentElement.classList.toggle('high-glare', highGlareMode);
-  }, [highGlareMode]);
+    let theme: Theme | undefined;
 
-  // Apply theme to document
-  useEffect(() => {
     if (currentTheme === 'Custom' && customTheme) {
-      applyTheme(customTheme);
+      theme = customTheme;
     } else {
-      const presetTheme = getPresetTheme(currentTheme);
-      if (presetTheme) {
-        applyTheme(presetTheme);
-      }
+      theme = getPresetTheme(currentTheme);
     }
-  }, [currentTheme, customTheme]);
+
+    if (theme) {
+      // Generate high-contrast variant if high-glare mode is active
+      const themeToApply = highGlareMode
+        ? generateHighContrastTheme(theme)
+        : theme;
+      applyTheme(themeToApply);
+    }
+
+    // Keep the class for CSS-based enhancements (font weights, borders)
+    document.documentElement.classList.toggle('high-glare', highGlareMode);
+  }, [currentTheme, customTheme, highGlareMode]);
 
   useEffect(() => {
     async function init() {

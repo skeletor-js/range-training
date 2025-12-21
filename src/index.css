@@ -47,23 +47,56 @@ body {
 }
 
 /* High-Glare Mode for outdoor/sunlight use */
-.high-glare {
-  --background: 0 0% 0%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 5%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 5%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 25 100% 55%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 12%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 65%;
-  --accent: 0 0% 12%;
-  --accent-foreground: 0 0% 100%;
-  --border: 0 0% 25%;
-  --input: 0 0% 18%;
+/* Colors are now dynamically computed via generateHighContrastTheme() */
+
+/* Font weight bumping - one level bolder for better readability */
+.high-glare .font-normal {
+  font-weight: 500;
+}
+
+.high-glare .font-medium {
+  font-weight: 600;
+}
+
+.high-glare .font-semibold {
+  font-weight: 700;
+}
+
+.high-glare .font-bold {
+  font-weight: 800;
+}
+
+/* Stronger borders for better visibility */
+.high-glare .border {
+  border-width: 2px;
+}
+
+.high-glare .border-t,
+.high-glare .border-b,
+.high-glare .border-l,
+.high-glare .border-r {
+  border-width: 2px;
+}
+
+/* Enhanced focus outlines for accessibility */
+.high-glare *:focus-visible {
+  outline: 3px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Interactive element outlines */
+.high-glare button,
+.high-glare [role="button"],
+.high-glare input,
+.high-glare select,
+.high-glare textarea {
+  outline: 1px solid hsl(var(--border));
+}
+
+.high-glare button:hover,
+.high-glare [role="button"]:hover {
+  outline-width: 2px;
+  outline-color: hsl(var(--primary));
 }
 
 /* Larger touch targets in high-glare mode */
