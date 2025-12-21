@@ -10,6 +10,7 @@ import { Home } from '@/pages/Home';
 import { Sessions } from '@/pages/Sessions';
 import { Training } from '@/pages/Training';
 import { DrillDetail } from '@/pages/DrillDetail';
+import { UpdateNotification, NetworkStatus } from '@/components/pwa';
 import { cn } from '@/lib/utils';
 
 
@@ -26,6 +27,9 @@ function Navigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-inset-bottom">
+      <div className="absolute -top-6 left-4">
+        <NetworkStatus />
+      </div>
       <div className="flex justify-around items-center h-16">
         {navItems.map(({ path, icon: Icon, label }) => {
           // Check if current path matches or starts with the nav path (for nested routes)
@@ -130,6 +134,7 @@ function App() {
   return (
     <BrowserRouter>
       <AppContent />
+      <UpdateNotification />
     </BrowserRouter>
   );
 }

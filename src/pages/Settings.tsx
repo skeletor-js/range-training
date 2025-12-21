@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { exportDatabase, exportAsJSON, importDatabase, getDatabaseStats } from '@/lib/export';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { InstallPrompt } from '@/components/pwa';
 
 interface DatabaseStats {
   firearms: number;
@@ -244,6 +245,11 @@ export function Settings() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Install App */}
+      <div className="mb-6">
+        <InstallPrompt />
+      </div>
 
       {/* Display Settings */}
       <Card className="mb-6">
