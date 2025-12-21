@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CALIBERS, FIREARM_TYPES } from '@/lib/constants';
+import { CALIBERS, FIREARM_TYPES, FIREARM_TYPE_LABELS } from '@/lib/constants';
 import { firearmSchema, type FirearmFormData } from '@/lib/validations';
 import type { Firearm } from '@/types';
 
@@ -150,7 +150,7 @@ export function FirearmForm({
                   <SelectContent>
                     {FIREARM_TYPES.map((type) => (
                       <SelectItem key={type} value={type}>
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                        {FIREARM_TYPE_LABELS[type]}
                       </SelectItem>
                     ))}
                   </SelectContent>
