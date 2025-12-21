@@ -282,6 +282,9 @@ async function doInitialize(): Promise<void> {
         await runMigrations(currentVersion, CURRENT_SCHEMA_VERSION);
       }
     }
+
+    // Always attempt to seed built-in drills to ensure they exist (function is idempotent)
+    await seedBuiltinDrills();
   } catch (error) {
     console.error('[DB] Failed to initialize database:', error);
     throw error;
