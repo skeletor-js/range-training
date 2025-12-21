@@ -1,24 +1,33 @@
-import { Sun, Volume2, Vibrate } from 'lucide-react';
+import { Sun, Volume2, Vibrate, Mic } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 
 interface DisplaySettingsCardProps {
   highGlareMode: boolean;
   soundEnabled: boolean;
   hapticEnabled: boolean;
+  shotDetectionEnabled: boolean;
+  shotDetectionSensitivity: number;
   onToggleHighGlare: () => void;
   onToggleSound: () => void;
   onToggleHaptic: () => void;
+  onToggleShotDetection: () => void;
+  onShotDetectionSensitivityChange: (value: number) => void;
 }
 
 export function DisplaySettingsCard({
   highGlareMode,
   soundEnabled,
   hapticEnabled,
+  shotDetectionEnabled,
+  shotDetectionSensitivity,
   onToggleHighGlare,
   onToggleSound,
   onToggleHaptic,
+  onToggleShotDetection,
+  onShotDetectionSensitivityChange,
 }: DisplaySettingsCardProps) {
   return (
     <Card className="mb-6">
@@ -68,6 +77,45 @@ export function DisplaySettingsCard({
             checked={hapticEnabled}
             onCheckedChange={onToggleHaptic}
           />
+        </div>
+
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Mic className="h-4 w-4 text-muted-foreground" />
+              <Label htmlFor="shot-detection">Shot Detection</Label>
+            </div>
+            <Switch
+              id="shot-detection"
+              checked={shotDetectionEnabled}
+              onCheckedChange={onToggleShotDetection}
+            />
+          </div>
+
+          {shotDetectionEnabled && (
+            <div className="pl-6 space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="sensitivity" className="text-sm text-muted-foreground">
+                  Sensitivity
+                </Label>
+                <span className="text-sm font-mono text-muted-foreground">
+                  {shotDetectionSensitivity}%
+                </span>
+              </div>
+              <Slider
+                id="sensitivity"
+                value={[shotDetectionSensitivity]}
+                onValueChange={(values) => onShotDetectionSensitivityChange(values[0])}
+                min={0}
+                max={100}
+                step={1}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground">
+                Auto-stop timer when gunshot detected via microphone
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

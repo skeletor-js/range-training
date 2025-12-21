@@ -1,15 +1,24 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
+export type DelayMode = 'none' | 'fixed' | 'random';
+
 interface UseTimerOptions {
   mode: 'countdown' | 'stopwatch';
   initialSeconds?: number;
   onComplete?: () => void;
   onTick?: (seconds: number) => void;
+  delayMode?: DelayMode;
+  fixedDelay?: number;
+  randomDelayMin?: number;
+  randomDelayMax?: number;
+  onDelayComplete?: () => void;
 }
 
 interface UseTimerReturn {
   seconds: number;
   isRunning: boolean;
+  isDelaying: boolean;
+  delaySeconds: number;
   start: () => void;
   stop: () => void;
   reset: () => void;
@@ -55,12 +64,21 @@ export function useTimer({
   initialSeconds = 0,
   onComplete,
   onTick,
+  delayMode = 'none',
+  fixedDelay = 3,
+  randomDelayMin = 2,
+  randomDelayMax = 5,
+  onDelayComplete,
 }: UseTimerOptions): UseTimerReturn {
   const [seconds, setSeconds] = useState(mode === 'countdown' ? initialSeconds : 0);
   const [isRunning, setIsRunning] = useState(false);
+  const [isDelaying, setIsDelaying] = useState(false);
+  const [delaySeconds, setDelaySeconds] = useState(0);
   const intervalRef = useRef<number | null>(null);
+  const delayIntervalRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const elapsedBeforePauseRef = useRef<number>(0);
+  const delayStartTimeRef = useRef<number>(0);
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -69,10 +87,16 @@ export function useTimer({
     }
   }, []);
 
-  const start = useCallback(() => {
-    if (isRunning) return;
+  const clearDelayTimer = useCallback(() => {
+    if (delayIntervalRef.current !== null) {
+      clearInterval(delayIntervalRef.current);
+      delayIntervalRef.current = null;
+    }
+  }, []);
 
+  const startMainTimer = useCallback(() => {
     setIsRunning(true);
+    setIsDelaying(false);
     startTimeRef.current = Date.now();
 
     intervalRef.current = window.setInterval(() => {
@@ -95,26 +119,82 @@ export function useTimer({
         setSeconds(elapsed);
         onTick?.(elapsed);
       }
-    }, 50); // Update every 50ms for smooth display
-  }, [isRunning, mode, initialSeconds, onComplete, onTick, clearTimer]);
+    }, 50);
+  }, [mode, initialSeconds, onComplete, onTick, clearTimer]);
+
+  const startDelay = useCallback(() => {
+    // Calculate delay time
+    let delayTime: number;
+    if (delayMode === 'fixed') {
+      delayTime = fixedDelay;
+    } else if (delayMode === 'random') {
+      delayTime = randomDelayMin + Math.random() * (randomDelayMax - randomDelayMin);
+    } else {
+      // No delay, start immediately
+      startMainTimer();
+      return;
+    }
+
+    setIsDelaying(true);
+    setDelaySeconds(delayTime);
+    delayStartTimeRef.current = Date.now();
+
+    // Play ready beep
+    playBeep(660, 150);
+
+    delayIntervalRef.current = window.setInterval(() => {
+      const elapsed = (Date.now() - delayStartTimeRef.current) / 1000;
+      const remaining = Math.max(0, delayTime - elapsed);
+      setDelaySeconds(remaining);
+
+      // Play countdown beeps at 1 second intervals
+      if (remaining > 0 && remaining <= 3 && Math.abs(remaining - Math.round(remaining)) < 0.05) {
+        playBeep(660, 100);
+      }
+
+      if (remaining <= 0) {
+        clearDelayTimer();
+        setIsDelaying(false);
+        setDelaySeconds(0);
+        // Play start beep
+        playBeep(880, 200);
+        onDelayComplete?.();
+        startMainTimer();
+      }
+    }, 50);
+  }, [delayMode, fixedDelay, randomDelayMin, randomDelayMax, clearDelayTimer, startMainTimer, onDelayComplete]);
+
+  const start = useCallback(() => {
+    if (isRunning || isDelaying) return;
+    startDelay();
+  }, [isRunning, isDelaying, startDelay]);
 
   const stop = useCallback(() => {
-    if (!isRunning) return;
+    if (isDelaying) {
+      // Stop during delay
+      clearDelayTimer();
+      setIsDelaying(false);
+      setDelaySeconds(0);
+    } else if (isRunning) {
+      // Stop during main timer
+      clearTimer();
+      setIsRunning(false);
 
-    clearTimer();
-    setIsRunning(false);
-
-    // Store elapsed time for resume
-    const elapsed = (Date.now() - startTimeRef.current) / 1000;
-    elapsedBeforePauseRef.current += elapsed;
-  }, [isRunning, clearTimer]);
+      // Store elapsed time for resume
+      const elapsed = (Date.now() - startTimeRef.current) / 1000;
+      elapsedBeforePauseRef.current += elapsed;
+    }
+  }, [isRunning, isDelaying, clearTimer, clearDelayTimer]);
 
   const reset = useCallback(() => {
     clearTimer();
+    clearDelayTimer();
     setIsRunning(false);
+    setIsDelaying(false);
+    setDelaySeconds(0);
     elapsedBeforePauseRef.current = 0;
     setSeconds(mode === 'countdown' ? initialSeconds : 0);
-  }, [mode, initialSeconds, clearTimer]);
+  }, [mode, initialSeconds, clearTimer, clearDelayTimer]);
 
   const addTime = useCallback((amount: number) => {
     if (mode === 'countdown') {
@@ -124,8 +204,11 @@ export function useTimer({
 
   // Cleanup on unmount
   useEffect(() => {
-    return () => clearTimer();
-  }, [clearTimer]);
+    return () => {
+      clearTimer();
+      clearDelayTimer();
+    };
+  }, [clearTimer, clearDelayTimer]);
 
   // Reset when initialSeconds changes
   useEffect(() => {
@@ -138,6 +221,8 @@ export function useTimer({
   return {
     seconds,
     isRunning,
+    isDelaying,
+    delaySeconds,
     start,
     stop,
     reset,

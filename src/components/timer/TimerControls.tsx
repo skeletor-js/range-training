@@ -1,6 +1,14 @@
-import { Play, Pause, RotateCcw, Plus } from 'lucide-react';
+import { Play, Pause, RotateCcw, Plus, Bluetooth } from 'lucide-react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { TimerMode } from './RetroLEDTimer';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface TimerControlsProps {
   isRunning: boolean;
@@ -86,41 +94,99 @@ export function TimerControls({
   onAddTime,
   className,
 }: TimerControlsProps) {
+  const [showBluetoothDialog, setShowBluetoothDialog] = useState(false);
+
+  const handleBluetoothClick = async () => {
+    // Check if Web Bluetooth API is available
+    if ('bluetooth' in navigator && navigator.bluetooth) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (navigator.bluetooth as any).requestDevice({
+          acceptAllDevices: true,
+          optionalServices: ['battery_service'],
+        });
+      } catch (err) {
+        // User cancelled or error occurred
+        console.log('Bluetooth pairing cancelled or failed:', err);
+      }
+    } else {
+      // Show dialog with instructions
+      setShowBluetoothDialog(true);
+    }
+  };
+
   return (
-    <div className={cn('flex items-center gap-3', className)}>
-      {/* Start/Stop button */}
-      <IndustrialButton
-        onClick={onStartStop}
-        variant={isRunning ? 'danger' : 'primary'}
-        size="lg"
-      >
-        {isRunning ? (
-          <>
-            <Pause className="fill-current" />
-            Stop
-          </>
-        ) : (
-          <>
-            <Play className="fill-current" />
-            Start
-          </>
-        )}
-      </IndustrialButton>
-
-      {/* Reset button */}
-      <IndustrialButton onClick={onReset} variant="secondary" size="md">
-        <RotateCcw />
-        Reset
-      </IndustrialButton>
-
-      {/* Add Time button (countdown mode only) */}
-      {mode === 'countdown' && onAddTime && (
-        <IndustrialButton onClick={onAddTime} variant="secondary" size="md">
-          <Plus />
-          +1:00
+    <>
+      <div className={cn('flex items-center gap-3', className)}>
+        {/* Start/Stop button */}
+        <IndustrialButton
+          onClick={onStartStop}
+          variant={isRunning ? 'danger' : 'primary'}
+          size="lg"
+        >
+          {isRunning ? (
+            <>
+              <Pause className="fill-current" />
+              Stop
+            </>
+          ) : (
+            <>
+              <Play className="fill-current" />
+              Start
+            </>
+          )}
         </IndustrialButton>
-      )}
-    </div>
+
+        {/* Reset button */}
+        <IndustrialButton onClick={onReset} variant="secondary" size="md">
+          <RotateCcw />
+          Reset
+        </IndustrialButton>
+
+        {/* Add Time button (countdown mode only) */}
+        {mode === 'countdown' && onAddTime && (
+          <IndustrialButton onClick={onAddTime} variant="secondary" size="md">
+            <Plus />
+            +1:00
+          </IndustrialButton>
+        )}
+
+        {/* Bluetooth button */}
+        <IndustrialButton
+          onClick={handleBluetoothClick}
+          variant="secondary"
+          size="md"
+          className="ml-auto"
+        >
+          <Bluetooth />
+        </IndustrialButton>
+      </div>
+
+      {/* Bluetooth not available dialog */}
+      <Dialog open={showBluetoothDialog} onOpenChange={setShowBluetoothDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Bluetooth Settings</DialogTitle>
+            <DialogDescription>
+              Web Bluetooth API is not available in your browser. To connect Bluetooth audio devices:
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 text-sm">
+            <p className="font-semibold">On Mobile:</p>
+            <ol className="list-decimal list-inside space-y-1 ml-2">
+              <li>Open your device's Settings app</li>
+              <li>Navigate to Bluetooth settings</li>
+              <li>Pair your audio device</li>
+            </ol>
+            <p className="font-semibold mt-4">On Desktop:</p>
+            <ol className="list-decimal list-inside space-y-1 ml-2">
+              <li>Try using Chrome, Edge, or Opera browser</li>
+              <li>Or access system Bluetooth settings to pair devices</li>
+            </ol>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

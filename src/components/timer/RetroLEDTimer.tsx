@@ -1,7 +1,10 @@
+import { Mic, MicOff } from 'lucide-react';
 import { SevenSegmentDisplay } from './SevenSegmentDigit';
-import { useTimer, playBeep } from './useTimer';
+import { useTimer, playBeep, DelayMode } from './useTimer';
+import { useShotDetection } from './useShotDetection';
 import { TimerControls } from './TimerControls';
 import { cn } from '@/lib/utils';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 export type TimerMode = 'countdown' | 'stopwatch';
 export type TimerColor = 'amber' | 'red' | 'green';
@@ -16,6 +19,10 @@ interface RetroLEDTimerProps {
   showControls?: boolean;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  delayMode?: DelayMode;
+  fixedDelay?: number;
+  randomDelayMin?: number;
+  randomDelayMax?: number;
 }
 
 const colorMap: Record<TimerColor, string> = {
@@ -53,10 +60,21 @@ export function RetroLEDTimer({
   showControls = true,
   className,
   size = 'md',
+  delayMode,
+  fixedDelay,
+  randomDelayMin,
+  randomDelayMax,
 }: RetroLEDTimerProps) {
+  const {
+    shotDetectionEnabled,
+    shotDetectionSensitivity,
+  } = useSettingsStore();
+
   const {
     seconds,
     isRunning,
+    isDelaying,
+    delaySeconds,
     start,
     stop,
     reset,
@@ -65,26 +83,61 @@ export function RetroLEDTimer({
     mode,
     initialSeconds,
     onComplete,
+    delayMode,
+    fixedDelay,
+    randomDelayMin,
+    randomDelayMax,
+    onDelayComplete: () => {
+      // Start listening for shots when timer actually starts
+      if (shotDetectionEnabled && !isRunning) {
+        shotDetection.startListening();
+      }
+    },
   });
 
-  const time = formatTime(seconds);
+  const shotDetection = useShotDetection({
+    enabled: shotDetectionEnabled,
+    sensitivity: shotDetectionSensitivity,
+    onShotDetected: () => {
+      if (isRunning) {
+        stop();
+        playBeep(440, 100);
+        onTimeCapture?.(seconds);
+        shotDetection.stopListening();
+      }
+    },
+  });
+
+  const time = isDelaying ? formatTime(delaySeconds) : formatTime(seconds);
   const displayColor = colorMap[color];
   const displaySize = sizeMap[size];
 
+  // Show delay message
+  const showDelayMessage = isDelaying;
+  const delayMessage = delayMode === 'random' ? 'RANDOM DELAY' : 'FIXED DELAY';
+
   const handleStartStop = () => {
-    if (isRunning) {
+    if (isRunning || isDelaying) {
       stop();
       playBeep(440, 100);
-      onTimeCapture?.(seconds);
+      if (isRunning) {
+        onTimeCapture?.(seconds);
+      }
+      shotDetection.stopListening();
     } else {
       start();
       playBeep(880, 100);
+      // If no delay, start listening immediately
+      if (shotDetectionEnabled && (!delayMode || delayMode === 'none')) {
+        shotDetection.startListening();
+      }
     }
   };
 
   const handleReset = () => {
     reset();
     playBeep(330, 100);
+    shotDetection.stopListening();
   };
 
   const handleAddTime = () => {
@@ -169,9 +222,47 @@ export function RetroLEDTimer({
           </div>
 
           {/* Par time indicator */}
-          {parTime && (
+          {parTime && !showDelayMessage && (
             <div className="text-center mt-3 text-xs text-muted-foreground font-mono tracking-wider">
               PAR: {parTime.toFixed(2)}s
+            </div>
+          )}
+
+          {/* Delay message */}
+          {showDelayMessage && (
+            <div className="text-center mt-3 text-xs font-mono tracking-wider text-yellow-500">
+              {delayMessage}
+            </div>
+          )}
+
+          {/* Microphone status */}
+          {shotDetectionEnabled && (
+            <div className="flex items-center justify-center gap-2 mt-3">
+              {shotDetection.isListening ? (
+                <>
+                  <Mic className="h-4 w-4 text-green-500 animate-pulse" />
+                  <div className="text-xs font-mono text-green-500">LISTENING</div>
+                  {/* Volume meter */}
+                  <div className="h-2 w-20 bg-zinc-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-green-500 transition-all duration-100"
+                      style={{ width: `${Math.min(100, shotDetection.currentVolume * 200)}%` }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <MicOff className="h-4 w-4 text-muted-foreground" />
+                  <div className="text-xs font-mono text-muted-foreground">READY</div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Shot detection error */}
+          {shotDetection.error && (
+            <div className="text-center mt-2 text-xs text-red-500">
+              {shotDetection.error}
             </div>
           )}
         </div>
@@ -180,7 +271,7 @@ export function RetroLEDTimer({
       {/* Controls */}
       {showControls && (
         <TimerControls
-          isRunning={isRunning}
+          isRunning={isRunning || isDelaying}
           mode={mode}
           onStartStop={handleStartStop}
           onReset={handleReset}
