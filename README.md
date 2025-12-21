@@ -33,7 +33,7 @@ Photograph your targets and mark shot impacts to calculate professional-grade me
 - Document firearm-ammo compatibility with performance notes
 
 ### Drill Performance Tracking
-- 8 built-in standardized drills (Bill Drill, El Presidente, FAST, etc.)
+- 15 built-in standardized drills (Bill Drill, El Presidente, FAST, etc.)
 - Create custom drills with your own parameters
 - Track attempts with time, points, hits, or pass/fail scoring
 - View personal bests and performance trends over time
@@ -171,7 +171,7 @@ npm run dev
 npm run build
 ```
 
-Output is generated in the `dist/` directory. Deploy to any static hosting (Vercel, Cloudflare Pages, Netlify).
+Output is generated in the `dist/` directory. Deploy to any static hosting (Vercel, Cloudflare Pages, Netlify). For Cloudflare Pages, you can use the included `wrangler.toml` for configuration.
 
 ## Project Status
 
@@ -192,7 +192,8 @@ Output is generated in the `dist/` directory. Deploy to any static hosting (Verc
 - Precision metrics calculation (ES, MR, MOA)
 - Firearm and ammunition inventory management
 - Ammo purchase history with price tracking
-- 8 built-in drills with custom drill support
+- 15 built-in drills with custom drill support
+- 9 precision target templates (B-8, USPSA, IDPA, etc.)
 - Drill attempt logging with personal bests
 - Goal setting with drill-linked progress
 - Activity heatmap and dashboard stats
