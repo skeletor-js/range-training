@@ -22,9 +22,9 @@ export function FirearmList({
     return (
       <EmptyState
         icon={Package}
-        title="No firearms yet"
-        description="Add your first firearm to start tracking your range sessions."
-        actionLabel="Add Firearm"
+        title="No weapons yet"
+        description="Add your first weapon to start tracking your range sessions."
+        actionLabel="Add Weapon"
         onAction={onAdd}
       />
     );

@@ -24,7 +24,7 @@ function Navigation() {
     { path: '/', icon: HomeIcon, label: 'Home' },
     { path: '/sessions', icon: CalendarDays, label: 'Sessions' },
     { path: '/training', icon: Target, label: 'Training' },
-    { path: '/inventory', icon: Package, label: 'Inventory' },
+    { path: '/inventory', icon: Package, label: 'Armory' },
     { path: '/settings', icon: SettingsIcon, label: 'Settings' },
   ];
 

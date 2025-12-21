@@ -162,8 +162,8 @@ export function Inventory() {
   return (
     <div className="container max-w-2xl mx-auto px-4 py-8">
       <PageHeader
-        title="Inventory"
-        description="Manage your armory and ammunition"
+        title="Armory"
+        description="Manage your weapons and ammunition"
       />
 
       {error && (
@@ -175,7 +175,7 @@ export function Inventory() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <div className="flex items-center justify-between mb-4">
           <TabsList>
-            <TabsTrigger value="firearms">Armory</TabsTrigger>
+            <TabsTrigger value="firearms">Weapons</TabsTrigger>
             <TabsTrigger value="ammo">Ammo</TabsTrigger>
           </TabsList>
 
@@ -184,7 +184,7 @@ export function Inventory() {
             onClick={activeTab === 'firearms' ? handleAddFirearm : handleAddAmmo}
           >
             <Plus className="h-4 w-4 mr-1" />
-            Add {activeTab === 'firearms' ? 'Firearm' : 'Ammo'}
+            Add {activeTab === 'firearms' ? 'Weapon' : 'Ammo'}
           </Button>
         </div>
 
@@ -231,7 +231,7 @@ export function Inventory() {
       <ConfirmDialog
         open={!!deletingFirearm}
         onOpenChange={(open) => !open && setDeletingFirearm(null)}
-        title="Delete Firearm"
+        title="Delete Weapon"
         description={`Are you sure you want to delete "${deletingFirearm?.name}"? This action cannot be undone.`}
         confirmLabel="Delete"
         variant="destructive"

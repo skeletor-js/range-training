@@ -98,7 +98,7 @@ export function FirearmForm({
       await onSave(result.data);
       onOpenChange(false);
     } catch {
-      setErrors({ form: 'Failed to save firearm' });
+      setErrors({ form: 'Failed to save weapon' });
     } finally {
       setIsSaving(false);
     }
@@ -109,7 +109,7 @@ export function FirearmForm({
       <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
           <SheetHeader className="mb-6">
-            <SheetTitle>{isEditing ? 'Edit Firearm' : 'Add Firearm'}</SheetTitle>
+            <SheetTitle>{isEditing ? 'Edit Weapon' : 'Add Weapon'}</SheetTitle>
           </SheetHeader>
 
           <div className="space-y-4">
@@ -266,7 +266,7 @@ export function FirearmForm({
               Cancel
             </Button>
             <Button type="submit" disabled={isSaving}>
-              {isSaving ? 'Saving...' : isEditing ? 'Update' : 'Add Firearm'}
+              {isSaving ? 'Saving...' : isEditing ? 'Update' : 'Add Weapon'}
             </Button>
           </SheetFooter>
         </form>

@@ -89,7 +89,7 @@ export function AmmoCard({
             {compatibilityCount !== undefined && compatibilityCount > 0 && (
               <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                 <Link2 className="h-3 w-3" />
-                <span>{compatibilityCount} compatible firearm{compatibilityCount !== 1 ? 's' : ''}</span>
+                <span>{compatibilityCount} compatible weapon{compatibilityCount !== 1 ? 's' : ''}</span>
               </div>
             )}
 
@@ -119,7 +119,7 @@ export function AmmoCard({
               {onViewCompatibility && (
                 <DropdownMenuItem onClick={() => onViewCompatibility(ammo)}>
                   <Link2 className="h-4 w-4 mr-2" />
-                  Compatible Firearms
+                  Compatible Weapons
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />

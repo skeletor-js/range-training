@@ -185,7 +185,7 @@ export function DrillAttemptForm({
             {/* Optional: Firearm selection */}
             {firearms.length > 0 && (
               <div className="space-y-2">
-                <Label htmlFor="firearmId">Firearm (optional)</Label>
+                <Label htmlFor="firearmId">Weapon (optional)</Label>
                 <Select
                   value={formData.firearmId ?? ''}
                   onValueChange={(value) =>
@@ -197,7 +197,7 @@ export function DrillAttemptForm({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select firearm" />
+                    <SelectValue placeholder="Select weapon" />
                   </SelectTrigger>
                   <SelectContent>
                     {firearms.map((f) => (

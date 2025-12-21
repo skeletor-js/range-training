@@ -30,7 +30,7 @@ export function DatabaseStatsCard({ stats }: DatabaseStatsCardProps) {
         {stats ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
             <div>
-              <p className="text-muted-foreground">Firearms</p>
+              <p className="text-muted-foreground">Weapons</p>
               <p className="text-lg font-semibold">{stats.firearms}</p>
             </div>
             <div>

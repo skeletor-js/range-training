@@ -148,7 +148,7 @@ export function CompatibilityForm({
               {existing ? 'Edit Compatibility' : 'Add Compatibility'}
             </SheetTitle>
             <SheetDescription>
-              Link a firearm to compatible ammo with performance notes
+              Link a weapon to compatible ammo with performance notes
             </SheetDescription>
           </SheetHeader>
 
@@ -159,7 +159,7 @@ export function CompatibilityForm({
 
             {/* Firearm selector */}
             <div className="space-y-2">
-              <Label htmlFor="firearmId">Firearm *</Label>
+              <Label htmlFor="firearmId">Weapon *</Label>
               <Select
                 value={formData.firearmId}
                 onValueChange={(value) =>
@@ -168,7 +168,7 @@ export function CompatibilityForm({
                 disabled={!!firearm}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a firearm" />
+                  <SelectValue placeholder="Select a weapon" />
                 </SelectTrigger>
                 <SelectContent>
                   {firearms.map((f) => (
@@ -260,7 +260,7 @@ export function CompatibilityForm({
                 rows={4}
               />
               <p className="text-xs text-muted-foreground">
-                Document how this ammo performs in this specific firearm
+                Document how this ammo performs in this specific weapon
               </p>
             </div>
           </div>

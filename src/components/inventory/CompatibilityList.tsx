@@ -56,7 +56,7 @@ export function CompatibilityList({
   const viewMode = firearm ? 'ammo' : 'firearms';
   const title = firearm
     ? `Compatible Ammo for ${firearm.name}`
-    : `Compatible Firearms for ${ammo?.brand} ${ammo?.productLine || ''} ${ammo?.caliber}`;
+    : `Compatible Weapons for ${ammo?.brand} ${ammo?.productLine || ''} ${ammo?.caliber}`;
 
   // Load data when sheet opens
   useEffect(() => {
@@ -92,7 +92,7 @@ export function CompatibilityList({
         : 'Unknown Ammo';
     } else {
       const linkedFirearm = firearms.find((f) => f.id === compatibility.firearmId);
-      return linkedFirearm ? `${linkedFirearm.name} (${linkedFirearm.caliber})` : 'Unknown Firearm';
+      return linkedFirearm ? `${linkedFirearm.name} (${linkedFirearm.caliber})` : 'Unknown Weapon';
     }
   };
 
@@ -102,7 +102,7 @@ export function CompatibilityList({
         <SheetContent side="bottom" className="h-[85vh] flex flex-col">
           <SheetHeader className="text-left">
             <SheetTitle>
-              {viewMode === 'ammo' ? 'Compatible Ammo' : 'Compatible Firearms'}
+              {viewMode === 'ammo' ? 'Compatible Ammo' : 'Compatible Weapons'}
             </SheetTitle>
             <SheetDescription>{title}</SheetDescription>
           </SheetHeader>
@@ -116,7 +116,7 @@ export function CompatibilityList({
               <p className="text-muted-foreground">No compatibility data yet</p>
               <Button onClick={onAdd}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add {viewMode === 'ammo' ? 'Compatible Ammo' : 'Compatible Firearm'}
+                Add {viewMode === 'ammo' ? 'Compatible Ammo' : 'Compatible Weapon'}
               </Button>
             </div>
           ) : (
@@ -201,7 +201,7 @@ export function CompatibilityList({
         open={!!deleteConfirm}
         onOpenChange={(open) => !open && setDeleteConfirm(null)}
         title="Delete Compatibility"
-        description="This will remove the compatibility link between this firearm and ammo. This action cannot be undone."
+        description="This will remove the compatibility link between this weapon and ammo. This action cannot be undone."
         confirmLabel={isDeleting ? 'Deleting...' : 'Delete'}
         variant="destructive"
         onConfirm={handleDelete}
