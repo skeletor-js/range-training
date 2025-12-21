@@ -12,10 +12,22 @@
       "targetCount": 1,
       "distanceYards": 7,
       "benchmarks": [
-        { "level": "Novice", "threshold": 4.0 },
-        { "level": "Intermediate", "threshold": 3.0 },
-        { "level": "Advanced", "threshold": 2.5 },
-        { "level": "Expert", "threshold": 2.0 }
+        {
+          "level": "Novice",
+          "threshold": 4.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 3.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 2.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 2.0
+        }
       ]
     },
     {
@@ -30,10 +42,22 @@
       "targetCount": 1,
       "distanceYards": 7,
       "benchmarks": [
-        { "level": "Novice", "threshold": 4.0 },
-        { "level": "Intermediate", "threshold": 3.0 },
-        { "level": "Advanced", "threshold": 2.5 },
-        { "level": "Expert", "threshold": 2.0 }
+        {
+          "level": "Novice",
+          "threshold": 4.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 3.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 2.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 2.0
+        }
       ]
     },
     {
@@ -48,10 +72,22 @@
       "targetCount": 1,
       "distanceYards": 7,
       "benchmarks": [
-        { "level": "Novice", "threshold": 2.5 },
-        { "level": "Intermediate", "threshold": 2.0 },
-        { "level": "Advanced", "threshold": 1.5 },
-        { "level": "Expert", "threshold": 1.0 }
+        {
+          "level": "Novice",
+          "threshold": 2.5
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 2.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 1.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 1.0
+        }
       ]
     },
     {
@@ -66,9 +102,18 @@
       "targetCount": 10,
       "distanceYards": 3,
       "benchmarks": [
-        { "level": "Pass at 3 yards", "threshold": 1 },
-        { "level": "Pass at 5 yards", "threshold": 1 },
-        { "level": "Pass at 7 yards", "threshold": 1 }
+        {
+          "level": "Pass at 3 yards",
+          "threshold": 1
+        },
+        {
+          "level": "Pass at 5 yards",
+          "threshold": 1
+        },
+        {
+          "level": "Pass at 7 yards",
+          "threshold": 1
+        }
       ]
     },
     {
@@ -83,10 +128,22 @@
       "targetCount": 1,
       "distanceYards": 5,
       "benchmarks": [
-        { "level": "Novice", "threshold": 7.0 },
-        { "level": "Intermediate", "threshold": 5.0 },
-        { "level": "Advanced", "threshold": 4.0 },
-        { "level": "Expert", "threshold": 3.0 }
+        {
+          "level": "Novice",
+          "threshold": 7.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 5.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 4.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 3.0
+        }
       ]
     },
     {
@@ -101,10 +158,22 @@
       "targetCount": 1,
       "distanceYards": 10,
       "benchmarks": [
-        { "level": "Novice", "threshold": 15.0 },
-        { "level": "Intermediate", "threshold": 10.0 },
-        { "level": "Advanced", "threshold": 8.0 },
-        { "level": "Expert", "threshold": 6.0 }
+        {
+          "level": "Novice",
+          "threshold": 15.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 10.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 8.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 6.0
+        }
       ]
     },
     {
@@ -119,10 +188,22 @@
       "targetCount": 1,
       "distanceYards": 7,
       "benchmarks": [
-        { "level": "Novice", "threshold": 10.0 },
-        { "level": "Intermediate", "threshold": 7.0 },
-        { "level": "Advanced", "threshold": 5.0 },
-        { "level": "Expert", "threshold": 4.0 }
+        {
+          "level": "Novice",
+          "threshold": 10.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 7.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 5.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 4.0
+        }
       ]
     },
     {
@@ -137,10 +218,22 @@
       "targetCount": 3,
       "distanceYards": 10,
       "benchmarks": [
-        { "level": "Novice", "threshold": 15.0 },
-        { "level": "Intermediate", "threshold": 10.0 },
-        { "level": "Advanced", "threshold": 8.0 },
-        { "level": "Expert", "threshold": 6.0 }
+        {
+          "level": "Novice",
+          "threshold": 15.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 10.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 8.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 6.0
+        }
       ]
     },
     {
@@ -155,9 +248,178 @@
       "targetCount": 1,
       "distanceYards": null,
       "benchmarks": [
-        { "level": "Passing", "threshold": 17 },
-        { "level": "Good", "threshold": 19 },
-        { "level": "Excellent", "threshold": 21 }
+        {
+          "level": "Passing",
+          "threshold": 17
+        },
+        {
+          "level": "Good",
+          "threshold": 19
+        },
+        {
+          "level": "Excellent",
+          "threshold": 21
+        }
+      ]
+    },
+    {
+      "id": "builtin-cold-start",
+      "name": "Cold Start",
+      "description": "Fired as the very first string of a range session with no warm-up. 1 round on a 1-inch square or 2-inch circle from 3, 5, or 7 yards. Tests true 'cold' proficiency.",
+      "category": "accuracy",
+      "scoringType": "pass_fail",
+      "parTime": null,
+      "maxPoints": null,
+      "roundCount": 1,
+      "targetCount": 1,
+      "distanceYards": 5,
+      "benchmarks": [
+        {
+          "level": "Pass",
+          "threshold": 1
+        }
+      ]
+    },
+    {
+      "id": "builtin-practical-accuracy",
+      "name": "Practical Accuracy (3x5)",
+      "description": "5 rounds on a 3x5 index card from 7 yards. Tests surgical precision with no time limit.",
+      "category": "accuracy",
+      "scoringType": "hits",
+      "parTime": null,
+      "maxPoints": 5,
+      "roundCount": 5,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 3
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 4
+        },
+        {
+          "level": "Advanced",
+          "threshold": 5
+        }
+      ]
+    },
+    {
+      "id": "builtin-1-r-1",
+      "name": "1-R-1 (Reload Drill)",
+      "description": "Start with 1 round in the chamber and an empty magazine seated. On signal, fire 1 shot, perform an emergency reload, and fire 1 more shot. Tests manipulation speed.",
+      "category": "reload",
+      "scoringType": "time",
+      "parTime": 3.0,
+      "maxPoints": null,
+      "roundCount": 2,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 5.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 4.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 3.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 2.2
+        }
+      ]
+    },
+    {
+      "id": "builtin-triple-nickel",
+      "name": "Triple Nickel",
+      "description": "5 targets, 5 yards, 5 seconds. Engage each target with 2 rounds. Tests rapid target transitions and speed.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 5.0,
+      "maxPoints": null,
+      "roundCount": 10,
+      "targetCount": 5,
+      "distanceYards": 5,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 8.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 6.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 5.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 4.0
+        }
+      ]
+    },
+    {
+      "id": "builtin-fbi-qual-2019",
+      "name": "FBI Qualification (2019)",
+      "description": "The current 50-round standard for FBI agents. Multiple strings at 3, 5, 7, 15, and 25 yards. Scoring is based on hits in the Q target silhouette.",
+      "category": "accuracy",
+      "scoringType": "hits",
+      "parTime": null,
+      "maxPoints": 50,
+      "roundCount": 50,
+      "targetCount": 1,
+      "distanceYards": null,
+      "benchmarks": [
+        {
+          "level": "Passing",
+          "threshold": 40
+        },
+        {
+          "level": "Instructor Level",
+          "threshold": 45
+        },
+        {
+          "level": "Perfect Score",
+          "threshold": 50
+        }
+      ]
+    },
+    {
+      "id": "builtin-double-tap",
+      "name": "Double Tap String",
+      "description": "Engage a target with 2 rapid rounds. Tests recoil management and trigger reset.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 1.5,
+      "maxPoints": null,
+      "roundCount": 2,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 2.5
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 2.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 1.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 1.0
+        }
       ]
     }
   ]

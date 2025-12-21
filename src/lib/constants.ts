@@ -123,6 +123,48 @@ export const TARGET_PRESETS: TargetPreset[] = [
     description: 'USPSA/IPSC metric target',
   },
   {
+    id: 'idpa-silhouette',
+    name: 'IDPA Silhouette',
+    knownDimensionInches: 8, // Down Zero circle diameter
+    svgTemplate: 'IDPATarget',
+    description: 'IDPA/Defensive silhouette',
+  },
+  {
+    id: 'index-card',
+    name: '3x5 Index Card',
+    knownDimensionInches: 5, // Height
+    svgTemplate: 'IndexCardTarget',
+    description: 'Standard 3x5" index card',
+  },
+  {
+    id: 'paper-plate',
+    name: '9" Paper Plate',
+    knownDimensionInches: 9, // Diameter
+    svgTemplate: 'PaperPlateTarget',
+    description: '9-inch white paper plate',
+  },
+  {
+    id: 'moa-grid',
+    name: 'MOA Grid',
+    knownDimensionInches: 1, // 1-inch grid
+    svgTemplate: 'MOAGridTarget',
+    description: 'Precision 1/4" and 1" grid',
+  },
+  {
+    id: 'dot-torture',
+    name: 'Dot Torture',
+    knownDimensionInches: 2, // Circle diameter
+    svgTemplate: 'DotTortureTarget',
+    description: '10 numbered 2" circles',
+  },
+  {
+    id: 'multi-bull',
+    name: '5-Bullseye Precision',
+    knownDimensionInches: 3, // Outer ring diameter
+    svgTemplate: 'MultiBullTarget',
+    description: 'Sheet with 5 precision bullseyes',
+  },
+  {
     id: 'neutral-grid',
     name: 'Neutral Grid',
     knownDimensionInches: 1, // 1-inch grid squares

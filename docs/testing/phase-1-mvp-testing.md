@@ -30,6 +30,12 @@
 ### Calibration
 - [ ] B-8 preset calibration works
 - [ ] USPSA preset calibration works
+- [ ] IDPA preset calibration works
+- [ ] Index Card preset calibration works
+- [ ] Paper Plate preset calibration works
+- [ ] MOA Grid preset calibration works
+- [ ] Dot Torture preset calibration works
+- [ ] Multi-Bullseye preset calibration works
 - [ ] Custom calibration works
 - [ ] Changing preset updates overlay correctly
 
@@ -59,6 +65,12 @@
 ### Target Templates
 - [ ] B-8 target displays correctly
 - [ ] USPSA target displays correctly
+- [ ] IDPA target displays correctly
+- [ ] Index Card target displays correctly
+- [ ] Paper Plate target displays correctly
+- [ ] MOA Grid target displays correctly
+- [ ] Dot Torture target displays correctly
+- [ ] Multi-Bullseye target displays correctly
 - [ ] Neutral grid displays correctly
 - [ ] Shot positions align with templates
 

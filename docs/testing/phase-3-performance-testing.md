@@ -12,6 +12,12 @@
 - [ ] FAST Drill displays correctly
 - [ ] El Presidente displays correctly
 - [ ] Casino Drill displays correctly
+- [ ] Cold Start displays correctly
+- [ ] Practical Accuracy (3x5) displays correctly
+- [ ] 1-R-1 (Reload Drill) displays correctly
+- [ ] Triple Nickel displays correctly
+- [ ] FBI Qualification (2019) displays correctly
+- [ ] Double Tap String displays correctly
 
 ### Drill Details
 - [ ] Description shows

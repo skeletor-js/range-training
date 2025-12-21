@@ -3,6 +3,12 @@ import { ShotPlot } from './ShotPlot';
 import { MetricsDisplay } from './MetricsDisplay';
 import { B8Target } from './templates/B8Target';
 import { USPSATarget } from './templates/USPSATarget';
+import { IDPATarget } from './templates/IDPATarget';
+import { IndexCardTarget } from './templates/IndexCardTarget';
+import { PaperPlateTarget } from './templates/PaperPlateTarget';
+import { MOAGridTarget } from './templates/MOAGridTarget';
+import { DotTortureTarget } from './templates/DotTortureTarget';
+import { MultiBullTarget } from './templates/MultiBullTarget';
 import { NeutralGrid } from './templates/NeutralGrid';
 
 interface TargetViewerProps {
@@ -40,6 +46,18 @@ export function TargetViewer({
         return <B8Target width={200} height={200} showRings={false} />;
       case 'uspsa-metric':
         return <USPSATarget width={180} height={300} showZones={false} />;
+      case 'idpa-silhouette':
+        return <IDPATarget width={180} height={300} showZones={false} />;
+      case 'index-card':
+        return <IndexCardTarget width={150} height={250} />;
+      case 'paper-plate':
+        return <PaperPlateTarget width={200} height={200} />;
+      case 'moa-grid':
+        return <MOAGridTarget width={200} height={200} />;
+      case 'dot-torture':
+        return <DotTortureTarget width={200} height={260} />;
+      case 'multi-bull':
+        return <MultiBullTarget width={200} height={200} />;
       case 'neutral-grid':
       default:
         return <NeutralGrid width={200} height={200} showLabels={false} />;
