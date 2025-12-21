@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Home as HomeIcon, CalendarDays, Package, Settings as SettingsIcon, Target } from 'lucide-react';
 import { initializeDatabase } from '@/db';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { Settings } from '@/pages/Settings';
 import { Inventory } from '@/pages/Inventory';
 import { Capture } from '@/pages/Capture';
@@ -84,6 +85,12 @@ function AppContent() {
 function App() {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const highGlareMode = useSettingsStore((state) => state.highGlareMode);
+
+  // Apply high-glare mode class to document
+  useEffect(() => {
+    document.documentElement.classList.toggle('high-glare', highGlareMode);
+  }, [highGlareMode]);
 
   useEffect(() => {
     async function init() {
