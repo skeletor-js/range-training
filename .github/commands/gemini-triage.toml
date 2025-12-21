@@ -14,22 +14,22 @@ You are an issue triage assistant. Analyze the current GitHub issue and identify
 
 **Available Labels** (comma-separated):
 ```
-!{echo $AVAILABLE_LABELS}
+!{printenv AVAILABLE_LABELS}
 ```
 
 **Issue Title**:
 ```
-!{echo $ISSUE_TITLE}
+!{printenv ISSUE_TITLE}
 ```
 
 **Issue Body**:
 ```
-!{echo $ISSUE_BODY}
+!{printenv ISSUE_BODY}
 ```
 
 **Output File Path**:
 ```
-!{echo $GITHUB_ENV}
+!{printenv GITHUB_ENV}
 ```
 
 ## Steps
