@@ -1,49 +1,20 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Home, CalendarDays, Package, Settings as SettingsIcon } from 'lucide-react';
+import { Home as HomeIcon, CalendarDays, Package, Settings as SettingsIcon } from 'lucide-react';
 import { initializeDatabase } from '@/db';
 import { Settings } from '@/pages/Settings';
+import { Inventory } from '@/pages/Inventory';
+import { Capture } from '@/pages/Capture';
+import { Home } from '@/pages/Home';
+import { Sessions } from '@/pages/Sessions';
 import { cn } from '@/lib/utils';
 
-function HomePage() {
-  return (
-    <div className="container max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Range App</h1>
-      <p className="text-muted-foreground mb-6">
-        Track your range sessions, manage ammunition, and measure improvement over time.
-      </p>
-      <div className="p-6 rounded-xl border bg-card">
-        <p className="text-sm text-muted-foreground">
-          Database initialized and ready. Visit Settings to test export/import functionality.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function SessionsPage() {
-  return (
-    <div className="container max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Sessions</h1>
-      <p className="text-muted-foreground">Coming soon in Phase 1.</p>
-    </div>
-  );
-}
-
-function InventoryPage() {
-  return (
-    <div className="container max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Inventory</h1>
-      <p className="text-muted-foreground">Coming soon in Phase 1.</p>
-    </div>
-  );
-}
 
 function Navigation() {
   const location = useLocation();
 
   const navItems = [
-    { path: '/', icon: Home, label: 'Home' },
+    { path: '/', icon: HomeIcon, label: 'Home' },
     { path: '/sessions', icon: CalendarDays, label: 'Sessions' },
     { path: '/inventory', icon: Package, label: 'Inventory' },
     { path: '/settings', icon: SettingsIcon, label: 'Settings' },
@@ -76,13 +47,24 @@ function Navigation() {
 }
 
 function AppContent() {
+  const location = useLocation();
+
+  // Full-screen routes without navigation
+  if (location.pathname === '/capture') {
+    return (
+      <Routes>
+        <Route path="/capture" element={<Capture />} />
+      </Routes>
+    );
+  }
+
   return (
     <>
       <main className="pb-20">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/sessions" element={<SessionsPage />} />
-          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/sessions" element={<Sessions />} />
+          <Route path="/inventory" element={<Inventory />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </main>
