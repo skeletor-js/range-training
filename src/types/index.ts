@@ -28,6 +28,8 @@ export type {
   NewTimerSession,
   FirearmAmmoCompatibility,
   NewFirearmAmmoCompatibility,
+  Malfunction,
+  NewMalfunction,
 } from '@/db/schema';
 
 // UI-specific types
@@ -213,4 +215,17 @@ export interface BuiltinDrillDefinition {
   targetCount: number;
   distanceYards: number | null;
   benchmarks: { level: string; threshold: number }[];
+}
+
+// Malfunction with joined details for display
+export interface MalfunctionWithDetails {
+  id: string;
+  sessionId: string | null;
+  ammoId: string | null;
+  firearmId: string | null;
+  malfunctionType: 'failure_to_feed' | 'failure_to_eject' | 'failure_to_fire' | 'light_primer_strike' | 'squib' | 'hang_fire' | 'misfire' | 'jam' | 'other';
+  description: string | null;
+  createdAt: string | null;
+  firearmName: string | null;
+  ammoName: string | null;
 }

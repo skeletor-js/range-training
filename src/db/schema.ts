@@ -200,6 +200,19 @@ export const firearmAmmoCompatibility = sqliteTable('firearm_ammo_compatibility'
   updatedAt: text('updated_at').default(sql`(datetime('now'))`),
 });
 
+// Malfunction Logs (Session-level tracking of ammo/firearm issues)
+export const malfunctions = sqliteTable('malfunctions', {
+  id: text('id').primaryKey(),
+  sessionId: text('session_id').references(() => sessions.id, { onDelete: 'cascade' }),
+  ammoId: text('ammo_id').references(() => ammo.id),
+  firearmId: text('firearm_id').references(() => firearms.id),
+  malfunctionType: text('malfunction_type', {
+    enum: ['failure_to_feed', 'failure_to_eject', 'failure_to_fire', 'light_primer_strike', 'squib', 'hang_fire', 'misfire', 'jam', 'other'],
+  }).notNull(),
+  description: text('description'),
+  createdAt: text('created_at').default(sql`(datetime('now'))`),
+});
+
 // Schema Version for Migrations
 export const schemaVersion = sqliteTable('schema_version', {
   version: integer('version').primaryKey(),
@@ -235,3 +248,5 @@ export type TimerSession = typeof timerSessions.$inferSelect;
 export type NewTimerSession = typeof timerSessions.$inferInsert;
 export type FirearmAmmoCompatibility = typeof firearmAmmoCompatibility.$inferSelect;
 export type NewFirearmAmmoCompatibility = typeof firearmAmmoCompatibility.$inferInsert;
+export type Malfunction = typeof malfunctions.$inferSelect;
+export type NewMalfunction = typeof malfunctions.$inferInsert;

@@ -193,6 +193,21 @@ CREATE TABLE IF NOT EXISTS firearm_ammo_compatibility (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_firearm_ammo_unique
 ON firearm_ammo_compatibility(firearm_id, ammo_id);
 
+-- Malfunction Logs
+CREATE TABLE IF NOT EXISTS malfunctions (
+  id TEXT PRIMARY KEY,
+  session_id TEXT REFERENCES sessions(id) ON DELETE CASCADE,
+  ammo_id TEXT REFERENCES ammo(id),
+  firearm_id TEXT REFERENCES firearms(id),
+  malfunction_type TEXT NOT NULL CHECK(malfunction_type IN ('failure_to_feed', 'failure_to_eject', 'failure_to_fire', 'light_primer_strike', 'squib', 'hang_fire', 'misfire', 'jam', 'other')),
+  description TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+-- Indexes for malfunction lookups
+CREATE INDEX IF NOT EXISTS idx_malfunctions_session ON malfunctions(session_id);
+CREATE INDEX IF NOT EXISTS idx_malfunctions_ammo ON malfunctions(ammo_id);
+
 -- Schema Version for Migrations
 CREATE TABLE IF NOT EXISTS schema_version (
   version INTEGER PRIMARY KEY,
@@ -200,7 +215,7 @@ CREATE TABLE IF NOT EXISTS schema_version (
 );
 `;
 
-export const CURRENT_SCHEMA_VERSION = 5;
+export const CURRENT_SCHEMA_VERSION = 6;
 
 // Track initialization state to prevent duplicate calls
 let isInitialized = false;

@@ -15,6 +15,7 @@ const DrillDetail = lazy(() => import('@/pages/DrillDetail').then(m => ({ defaul
 const Inventory = lazy(() => import('@/pages/Inventory').then(m => ({ default: m.Inventory })));
 const Settings = lazy(() => import('@/pages/Settings').then(m => ({ default: m.Settings })));
 const Capture = lazy(() => import('@/pages/Capture').then(m => ({ default: m.Capture })));
+const SessionDetail = lazy(() => import('@/pages/SessionDetail').then(m => ({ default: m.SessionDetail })));
 
 
 function Navigation() {
@@ -38,7 +39,8 @@ function Navigation() {
           // Check if current path matches or starts with the nav path (for nested routes)
           const isActive =
             location.pathname === path ||
-            (path === '/training' && location.pathname.startsWith('/drills'));
+            (path === '/training' && location.pathname.startsWith('/drills')) ||
+            (path === '/sessions' && location.pathname.startsWith('/sessions/'));
           return (
             <Link
               key={path}
@@ -81,6 +83,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sessions" element={<Sessions />} />
+            <Route path="/sessions/:id" element={<SessionDetail />} />
             <Route path="/training" element={<Training />} />
             <Route path="/drills/:id" element={<DrillDetail />} />
             <Route path="/inventory" element={<Inventory />} />

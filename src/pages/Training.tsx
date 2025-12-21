@@ -111,7 +111,19 @@ export function Training() {
         description="Practice drills and track your goals"
       />
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => {
+          setActiveTab(value);
+          // Reload data when switching tabs to ensure fresh state
+          if (value === 'drills') {
+            loadDrillsWithStats();
+          } else {
+            loadGoals();
+          }
+        }}
+        className="mt-4"
+      >
         <TabsList className="w-full">
           <TabsTrigger value="drills" className="flex-1">
             Drills

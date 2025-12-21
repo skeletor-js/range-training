@@ -34,9 +34,7 @@ export function Sessions() {
   };
 
   const handleSelectSession = (session: Session) => {
-    // Navigate to session detail page
-    // For MVP, we'll just log it
-    console.log('Selected session:', session);
+    navigate(`/sessions/${session.id}`);
   };
 
   const handleConfirmDelete = async () => {

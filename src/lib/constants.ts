@@ -2,21 +2,48 @@
 export const CALIBERS = [
   // Handgun
   '.22 LR',
+  '.25 ACP',
+  '.32 ACP',
+  '.327 Federal Magnum',
   '.380 ACP',
   '9mm',
-  '.40 S&W',
-  '.45 ACP',
-  '10mm',
+  '9x18 Makarov',
+  '.357 SIG',
   '.357 Magnum',
   '.38 Special',
+  '.40 S&W',
+  '.41 Magnum',
+  '.44 Special',
   '.44 Magnum',
+  '.45 ACP',
+  '.45 Colt',
+  '.45 GAP',
+  '.50 AE',
+  '10mm',
   // Rifle
+  '.204 Ruger',
   '.223 Rem / 5.56 NATO',
-  '.308 Win / 7.62 NATO',
+  '.243 Winchester',
+  '.270 Winchester',
+  '.30-30 Winchester',
   '.30-06',
-  '6.5 Creedmoor',
   '.300 BLK',
+  '.300 Win Mag',
+  '.308 Win / 7.62 NATO',
+  '7.62x51 NATO',
+  '.338 Lapua Magnum',
+  '.350 Legend',
+  '.450 Bushmaster',
+  '.458 SOCOM',
+  '5.7x28mm',
+  '6.5 Creedmoor',
+  '6.5 Grendel',
+  '6.8 SPC',
   '7.62x39',
+  '7mm Rem Mag',
+  // Rimfire
+  '.17 HMR',
+  '.22 Short',
   '.22 WMR',
   // Shotgun
   '12 Gauge',
@@ -35,6 +62,8 @@ export const CALIBERS = [
   '.50 BP',
   '.54 BP',
   '.58 BP',
+  // Other/Wildcat
+  'Other',
 ] as const;
 
 // Firearm/weapon types
@@ -97,6 +126,31 @@ export const BULLET_TYPES = [
 // Reliability/Accuracy ratings
 export const RATING_OPTIONS = ['excellent', 'good', 'fair', 'poor'] as const;
 export type RatingOption = (typeof RATING_OPTIONS)[number];
+
+// Malfunction types for logging issues during sessions
+export const MALFUNCTION_TYPES = [
+  'failure_to_feed',
+  'failure_to_eject',
+  'failure_to_fire',
+  'light_primer_strike',
+  'squib',
+  'hang_fire',
+  'misfire',
+  'jam',
+  'other',
+] as const;
+export type MalfunctionType = (typeof MALFUNCTION_TYPES)[number];
+export const MALFUNCTION_TYPE_LABELS: Record<MalfunctionType, string> = {
+  failure_to_feed: 'Failure to Feed (F2F)',
+  failure_to_eject: 'Failure to Eject (FTE)',
+  failure_to_fire: 'Failure to Fire (FTF)',
+  light_primer_strike: 'Light Primer Strike',
+  squib: 'Squib Load',
+  hang_fire: 'Hang Fire',
+  misfire: 'Misfire',
+  jam: 'Jam',
+  other: 'Other',
+};
 
 // Target preset definitions
 export interface TargetPreset {

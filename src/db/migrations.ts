@@ -105,5 +105,28 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     console.log('[DB] Firearm types expanded for armory');
   }
 
+  // v5 -> v6: Add malfunctions table for tracking ammo/firearm issues
+  if (fromVersion < 6) {
+    console.log('[DB] Applying migration v6: Adding malfunctions table');
+
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS malfunctions (
+        id TEXT PRIMARY KEY,
+        session_id TEXT REFERENCES sessions(id) ON DELETE CASCADE,
+        ammo_id TEXT REFERENCES ammo(id),
+        firearm_id TEXT REFERENCES firearms(id),
+        malfunction_type TEXT NOT NULL CHECK(malfunction_type IN ('failure_to_feed', 'failure_to_eject', 'failure_to_fire', 'light_primer_strike', 'squib', 'hang_fire', 'misfire', 'jam', 'other')),
+        description TEXT,
+        created_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_malfunctions_session ON malfunctions(session_id)`);
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_malfunctions_ammo ON malfunctions(ammo_id)`);
+
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (6)`);
+    console.log('[DB] Malfunctions table created');
+  }
+
   console.log('[DB] Migrations complete');
 }

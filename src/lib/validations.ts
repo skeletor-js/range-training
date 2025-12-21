@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { FIREARM_TYPES } from './constants';
+import { FIREARM_TYPES, MALFUNCTION_TYPES } from './constants';
 
 // Firearm validation schema
 export const firearmSchema = z.object({
@@ -126,6 +126,17 @@ export const goalSchema = z.object({
 });
 
 export type GoalFormData = z.infer<typeof goalSchema>;
+
+// Malfunction validation schema
+export const malfunctionSchema = z.object({
+  sessionId: z.string().nullable().optional(),
+  ammoId: z.string().nullable().optional(),
+  firearmId: z.string().nullable().optional(),
+  malfunctionType: z.enum(MALFUNCTION_TYPES),
+  description: z.string().max(500).nullable().optional(),
+});
+
+export type MalfunctionFormData = z.infer<typeof malfunctionSchema>;
 
 // Helper to validate form data
 export function validateForm<T>(
