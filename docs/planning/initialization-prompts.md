@@ -45,3 +45,6 @@ Use these prompts to kick off each phase of development with an LLM agent like A
 > 1. Replace the standard timer with a premium "Retro LED Timer" featuring seven-segment digits, glow effects, and industrial styling. 
 > 2. Implement advanced data visualizations, including accuracy comparisons across different firearms and price trend lines for ammunition. 
 > 3. Perform a final sweep for technical polish: optimize DB queries, implement lazy loading for session history, and refine the UI for high-glare/outdoor scenarios as discussed in the PRD.
+> 4. Make sure that each of the previous four phases have been completed sufficiently and ALL features are implemented and working.
+> 5. Create a new folder in docs for testing checklists and list out how users should test each feature.
+
