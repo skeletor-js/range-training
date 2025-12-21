@@ -187,6 +187,19 @@ export const timerSessions = sqliteTable('timer_sessions', {
   completedFully: integer('completed_fully', { mode: 'boolean' }).default(false),
 });
 
+// Firearm-Ammo Compatibility Notes
+export const firearmAmmoCompatibility = sqliteTable('firearm_ammo_compatibility', {
+  id: text('id').primaryKey(),
+  firearmId: text('firearm_id').notNull().references(() => firearms.id, { onDelete: 'cascade' }),
+  ammoId: text('ammo_id').notNull().references(() => ammo.id, { onDelete: 'cascade' }),
+  performanceRating: text('performance_rating', { enum: ['excellent', 'good', 'fair', 'poor'] }),
+  loadNotes: text('load_notes'),
+  isTested: integer('is_tested', { mode: 'boolean' }).default(false),
+  lastTestedDate: text('last_tested_date'),
+  createdAt: text('created_at').default(sql`(datetime('now'))`),
+  updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
 // Schema Version for Migrations
 export const schemaVersion = sqliteTable('schema_version', {
   version: integer('version').primaryKey(),
@@ -220,3 +233,5 @@ export type Goal = typeof goals.$inferSelect;
 export type NewGoal = typeof goals.$inferInsert;
 export type TimerSession = typeof timerSessions.$inferSelect;
 export type NewTimerSession = typeof timerSessions.$inferInsert;
+export type FirearmAmmoCompatibility = typeof firearmAmmoCompatibility.$inferSelect;
+export type NewFirearmAmmoCompatibility = typeof firearmAmmoCompatibility.$inferInsert;

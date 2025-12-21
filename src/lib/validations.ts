@@ -71,6 +71,18 @@ export const shotSchema = z.object({
 
 export type ShotData = z.infer<typeof shotSchema>;
 
+// Firearm-Ammo Compatibility validation schema
+export const compatibilitySchema = z.object({
+  firearmId: z.string().min(1, 'Firearm is required'),
+  ammoId: z.string().min(1, 'Ammo is required'),
+  performanceRating: z.enum(['excellent', 'good', 'fair', 'poor']).nullable().optional(),
+  loadNotes: z.string().max(500).nullable().optional(),
+  isTested: z.boolean().default(false),
+  lastTestedDate: z.string().nullable().optional(),
+});
+
+export type CompatibilityFormData = z.infer<typeof compatibilitySchema>;
+
 // Helper to validate form data
 export function validateForm<T>(
   schema: z.ZodSchema<T>,

@@ -2,12 +2,6 @@ import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { FirearmList } from '@/components/inventory/FirearmList';
@@ -15,21 +9,21 @@ import { FirearmForm } from '@/components/inventory/FirearmForm';
 import { AmmoList } from '@/components/inventory/AmmoList';
 import { AmmoForm } from '@/components/inventory/AmmoForm';
 import { AmmoPurchaseForm } from '@/components/inventory/AmmoPurchaseForm';
+import { PurchaseHistorySheet } from '@/components/inventory/PurchaseHistorySheet';
+import { CompatibilityForm } from '@/components/inventory/CompatibilityForm';
+import { CompatibilityList } from '@/components/inventory/CompatibilityList';
 import { useInventoryStore } from '@/stores/inventoryStore';
-import type { Firearm, Ammo, AmmoPurchase } from '@/types';
+import type { Firearm, Ammo, FirearmAmmoCompatibility } from '@/types';
 import type { FirearmFormData, AmmoFormData, AmmoPurchaseFormData } from '@/lib/validations';
-import { formatDate } from '@/lib/utils';
 
 export function Inventory() {
   const {
     firearms,
     ammo,
-    ammoPurchases,
     isLoading,
     error,
     loadFirearms,
     loadAmmo,
-    loadAmmoPurchases,
     addFirearm,
     updateFirearm,
     deleteFirearm,
@@ -37,6 +31,7 @@ export function Inventory() {
     updateAmmo,
     deleteAmmo,
     addAmmoPurchase,
+    loadCompatibilities,
     clearError,
   } = useInventoryStore();
 
@@ -52,9 +47,13 @@ export function Inventory() {
   const [editingAmmo, setEditingAmmo] = useState<Ammo | null>(null);
   const [deletingAmmo, setDeletingAmmo] = useState<Ammo | null>(null);
   const [purchasingAmmo, setPurchasingAmmo] = useState<Ammo | null>(null);
-  const [viewingHistoryAmmo, setViewingHistoryAmmo] = useState<Ammo | null>(
-    null
-  );
+  const [viewingHistoryAmmo, setViewingHistoryAmmo] = useState<Ammo | null>(null);
+
+  // Compatibility state
+  const [compatibilityFirearm, setCompatibilityFirearm] = useState<Firearm | null>(null);
+  const [compatibilityAmmo, setCompatibilityAmmo] = useState<Ammo | null>(null);
+  const [showCompatibilityForm, setShowCompatibilityForm] = useState(false);
+  const [editingCompatibility, setEditingCompatibility] = useState<FirearmAmmoCompatibility | null>(null);
 
   // Load data on mount
   useEffect(() => {
@@ -126,9 +125,38 @@ export function Inventory() {
     await addAmmoPurchase(ammoId, data);
   };
 
-  const handleViewHistory = async (ammoItem: Ammo) => {
-    await loadAmmoPurchases(ammoItem.id);
+  const handleViewHistory = (ammoItem: Ammo) => {
     setViewingHistoryAmmo(ammoItem);
+  };
+
+  // Compatibility handlers
+  const handleViewFirearmCompatibility = (firearm: Firearm) => {
+    setCompatibilityFirearm(firearm);
+    setCompatibilityAmmo(null);
+  };
+
+  const handleViewAmmoCompatibility = (ammoItem: Ammo) => {
+    setCompatibilityAmmo(ammoItem);
+    setCompatibilityFirearm(null);
+  };
+
+  const handleAddCompatibility = () => {
+    setEditingCompatibility(null);
+    setShowCompatibilityForm(true);
+  };
+
+  const handleEditCompatibility = (compat: FirearmAmmoCompatibility) => {
+    setEditingCompatibility(compat);
+    setShowCompatibilityForm(true);
+  };
+
+  const handleCompatibilitySaved = async () => {
+    // Reload compatibilities after save
+    if (compatibilityFirearm) {
+      await loadCompatibilities(compatibilityFirearm.id);
+    } else if (compatibilityAmmo) {
+      await loadCompatibilities(undefined, compatibilityAmmo.id);
+    }
   };
 
   return (
@@ -172,6 +200,7 @@ export function Inventory() {
                 onEdit={handleEditFirearm}
                 onDelete={setDeletingFirearm}
                 onAdd={handleAddFirearm}
+                onViewCompatibility={handleViewFirearmCompatibility}
               />
             </TabsContent>
 
@@ -183,6 +212,7 @@ export function Inventory() {
                 onAddPurchase={setPurchasingAmmo}
                 onViewHistory={handleViewHistory}
                 onAdd={handleAddAmmo}
+                onViewCompatibility={handleViewAmmoCompatibility}
               />
             </TabsContent>
           </>
@@ -235,60 +265,46 @@ export function Inventory() {
         onSave={handleSaveAmmoPurchase}
       />
 
-      {/* Purchase History Dialog */}
-      <Dialog
+      {/* Purchase History Sheet */}
+      <PurchaseHistorySheet
         open={!!viewingHistoryAmmo}
         onOpenChange={(open) => !open && setViewingHistoryAmmo(null)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Purchase History</DialogTitle>
-            {viewingHistoryAmmo && (
-              <p className="text-sm text-muted-foreground">
-                {viewingHistoryAmmo.brand} {viewingHistoryAmmo.productLine} -{' '}
-                {viewingHistoryAmmo.caliber}
-              </p>
-            )}
-          </DialogHeader>
+        ammo={viewingHistoryAmmo}
+        onAddPurchase={() => {
+          setViewingHistoryAmmo(null);
+          if (viewingHistoryAmmo) {
+            setPurchasingAmmo(viewingHistoryAmmo);
+          }
+        }}
+      />
 
-          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-            {ammoPurchases.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No purchase history yet.
-              </p>
-            ) : (
-              ammoPurchases.map((purchase: AmmoPurchase) => (
-                <div
-                  key={purchase.id}
-                  className="p-3 rounded-lg border bg-card"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium">
-                        {purchase.quantity.toLocaleString()} rounds
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        ${purchase.priceTotal.toFixed(2)} ($
-                        {(purchase.priceTotal / purchase.quantity).toFixed(3)}
-                        /rd)
-                      </p>
-                    </div>
-                    <div className="text-right text-sm text-muted-foreground">
-                      <p>{formatDate(purchase.purchaseDate)}</p>
-                      {purchase.seller && <p>{purchase.seller}</p>}
-                    </div>
-                  </div>
-                  {purchase.notes && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      {purchase.notes}
-                    </p>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Compatibility List for Firearms */}
+      <CompatibilityList
+        open={!!compatibilityFirearm}
+        onOpenChange={(open) => !open && setCompatibilityFirearm(null)}
+        firearm={compatibilityFirearm ?? undefined}
+        onAdd={handleAddCompatibility}
+        onEdit={handleEditCompatibility}
+      />
+
+      {/* Compatibility List for Ammo */}
+      <CompatibilityList
+        open={!!compatibilityAmmo}
+        onOpenChange={(open) => !open && setCompatibilityAmmo(null)}
+        ammo={compatibilityAmmo ?? undefined}
+        onAdd={handleAddCompatibility}
+        onEdit={handleEditCompatibility}
+      />
+
+      {/* Compatibility Form */}
+      <CompatibilityForm
+        open={showCompatibilityForm}
+        onOpenChange={setShowCompatibilityForm}
+        firearm={compatibilityFirearm ?? undefined}
+        ammo={compatibilityAmmo ?? undefined}
+        existing={editingCompatibility ?? undefined}
+        onSave={handleCompatibilitySaved}
+      />
     </div>
   );
 }

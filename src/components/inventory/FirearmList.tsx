@@ -8,6 +8,7 @@ interface FirearmListProps {
   onEdit: (firearm: Firearm) => void;
   onDelete: (firearm: Firearm) => void;
   onAdd: () => void;
+  onViewCompatibility?: (firearm: Firearm) => void;
 }
 
 export function FirearmList({
@@ -15,6 +16,7 @@ export function FirearmList({
   onEdit,
   onDelete,
   onAdd,
+  onViewCompatibility,
 }: FirearmListProps) {
   if (firearms.length === 0) {
     return (
@@ -60,6 +62,7 @@ export function FirearmList({
                 firearm={firearm}
                 onEdit={onEdit}
                 onDelete={onDelete}
+                onViewCompatibility={onViewCompatibility}
               />
             ))}
           </div>

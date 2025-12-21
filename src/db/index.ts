@@ -188,6 +188,23 @@ CREATE TABLE IF NOT EXISTS timer_sessions (
   completed_fully INTEGER DEFAULT 0
 );
 
+-- Firearm-Ammo Compatibility Notes
+CREATE TABLE IF NOT EXISTS firearm_ammo_compatibility (
+  id TEXT PRIMARY KEY,
+  firearm_id TEXT NOT NULL REFERENCES firearms(id) ON DELETE CASCADE,
+  ammo_id TEXT NOT NULL REFERENCES ammo(id) ON DELETE CASCADE,
+  performance_rating TEXT CHECK(performance_rating IN ('excellent', 'good', 'fair', 'poor')),
+  load_notes TEXT,
+  is_tested INTEGER DEFAULT 0,
+  last_tested_date TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+
+-- Unique index for firearm-ammo pair
+CREATE UNIQUE INDEX IF NOT EXISTS idx_firearm_ammo_unique
+ON firearm_ammo_compatibility(firearm_id, ammo_id);
+
 -- Schema Version for Migrations
 CREATE TABLE IF NOT EXISTS schema_version (
   version INTEGER PRIMARY KEY,
@@ -195,7 +212,7 @@ CREATE TABLE IF NOT EXISTS schema_version (
 );
 `;
 
-const CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 2;
 
 /**
  * Initialize the database, creating tables if they don't exist
@@ -277,12 +294,28 @@ async function doInitialize(): Promise<void> {
 async function runMigrations(fromVersion: number, toVersion: number): Promise<void> {
   console.log(`[DB] Running migrations from v${fromVersion} to v${toVersion}`);
 
-  // Add migration logic here as the schema evolves
-  // Example:
-  // if (fromVersion < 2) {
-  //   await db.run(sql`ALTER TABLE firearms ADD COLUMN new_field TEXT`);
-  //   await db.run(sql`INSERT INTO schema_version (version) VALUES (2)`);
-  // }
+  // v1 -> v2: Add firearm_ammo_compatibility table
+  if (fromVersion < 2) {
+    console.log('[DB] Applying migration v2: Adding firearm_ammo_compatibility table');
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS firearm_ammo_compatibility (
+        id TEXT PRIMARY KEY,
+        firearm_id TEXT NOT NULL REFERENCES firearms(id) ON DELETE CASCADE,
+        ammo_id TEXT NOT NULL REFERENCES ammo(id) ON DELETE CASCADE,
+        performance_rating TEXT CHECK(performance_rating IN ('excellent', 'good', 'fair', 'poor')),
+        load_notes TEXT,
+        is_tested INTEGER DEFAULT 0,
+        last_tested_date TEXT,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+    await db.run(sql`
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_firearm_ammo_unique
+      ON firearm_ammo_compatibility(firearm_id, ammo_id)
+    `);
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (2)`);
+  }
 
   console.log('[DB] Migrations complete');
 }

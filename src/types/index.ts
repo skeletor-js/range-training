@@ -26,6 +26,8 @@ export type {
   NewGoal,
   TimerSession,
   NewTimerSession,
+  FirearmAmmoCompatibility,
+  NewFirearmAmmoCompatibility,
 } from '@/db/schema';
 
 // UI-specific types

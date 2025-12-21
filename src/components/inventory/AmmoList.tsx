@@ -10,6 +10,7 @@ interface AmmoListProps {
   onAddPurchase: (ammo: Ammo) => void;
   onViewHistory: (ammo: Ammo) => void;
   onAdd: () => void;
+  onViewCompatibility?: (ammo: Ammo) => void;
 }
 
 export function AmmoList({
@@ -19,6 +20,7 @@ export function AmmoList({
   onAddPurchase,
   onViewHistory,
   onAdd,
+  onViewCompatibility,
 }: AmmoListProps) {
   if (ammo.length === 0) {
     return (
@@ -81,6 +83,7 @@ export function AmmoList({
                 onDelete={onDelete}
                 onAddPurchase={onAddPurchase}
                 onViewHistory={onViewHistory}
+                onViewCompatibility={onViewCompatibility}
               />
             ))}
           </div>

@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2, Link2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,16 +7,25 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 interface FirearmCardProps {
   firearm: Firearm;
+  compatibilityCount?: number;
   onEdit: (firearm: Firearm) => void;
   onDelete: (firearm: Firearm) => void;
+  onViewCompatibility?: (firearm: Firearm) => void;
 }
 
-export function FirearmCard({ firearm, onEdit, onDelete }: FirearmCardProps) {
+export function FirearmCard({
+  firearm,
+  compatibilityCount,
+  onEdit,
+  onDelete,
+  onViewCompatibility,
+}: FirearmCardProps) {
   const typeLabel = firearm.type
     ? firearm.type.charAt(0).toUpperCase() + firearm.type.slice(1)
     : 'Other';
@@ -45,6 +54,14 @@ export function FirearmCard({ firearm, onEdit, onDelete }: FirearmCardProps) {
                 <span className="font-mono">S/N: {firearm.serialNumber}</span>
               )}
             </div>
+
+            {/* Compatibility count */}
+            {compatibilityCount !== undefined && compatibilityCount > 0 && (
+              <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                <Link2 className="h-3 w-3" />
+                <span>{compatibilityCount} compatible ammo type{compatibilityCount !== 1 ? 's' : ''}</span>
+              </div>
+            )}
           </div>
 
           <DropdownMenu>
@@ -54,6 +71,15 @@ export function FirearmCard({ firearm, onEdit, onDelete }: FirearmCardProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              {onViewCompatibility && (
+                <>
+                  <DropdownMenuItem onClick={() => onViewCompatibility(firearm)}>
+                    <Link2 className="h-4 w-4 mr-2" />
+                    Compatible Ammo
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
               <DropdownMenuItem onClick={() => onEdit(firearm)}>
                 <Pencil className="h-4 w-4 mr-2" />
                 Edit
