@@ -23,6 +23,10 @@ interface SettingsState {
   shotDetectionEnabled: boolean;
   shotDetectionSensitivity: number;
 
+  // Inventory Settings
+  lowStockThreshold: number; // rounds below which to show warning
+  lowStockWarningsEnabled: boolean;
+
   // Theme Settings
   currentTheme: string; // 'Default', 'Ocean', etc., or 'Custom'
   customTheme: Theme | null;
@@ -38,6 +42,8 @@ interface SettingsState {
   setRandomDelayMax: (seconds: number) => void;
   toggleShotDetection: () => void;
   setShotDetectionSensitivity: (value: number) => void;
+  setLowStockThreshold: (rounds: number) => void;
+  toggleLowStockWarnings: () => void;
   setTheme: (name: string) => void;
   setCustomTheme: (theme: Theme) => void;
   updateThemeColor: (key: ThemeColorKey, value: string) => void;
@@ -56,6 +62,8 @@ const defaultSettings = {
   randomDelayMax: 5,
   shotDetectionEnabled: false,
   shotDetectionSensitivity: 50,
+  lowStockThreshold: 100,
+  lowStockWarningsEnabled: true,
   currentTheme: 'Default',
   customTheme: null,
 };
@@ -94,6 +102,12 @@ export const useSettingsStore = create<SettingsState>()(
 
       setShotDetectionSensitivity: (value) =>
         set({ shotDetectionSensitivity: value }),
+
+      setLowStockThreshold: (rounds) =>
+        set({ lowStockThreshold: rounds }),
+
+      toggleLowStockWarnings: () =>
+        set((state) => ({ lowStockWarningsEnabled: !state.lowStockWarningsEnabled })),
 
       setTheme: (name) =>
         set({ currentTheme: name }),

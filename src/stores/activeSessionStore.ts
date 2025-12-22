@@ -13,6 +13,13 @@ import {
 import type { ActiveSession, CapturedTarget } from '@/types';
 import { generateId } from '@/lib/utils';
 
+interface QuickSessionData {
+  date: string;
+  location?: string;
+  notes?: string;
+  weather?: string;
+}
+
 interface ActiveSessionState {
   activeSession: ActiveSession | null;
   isLoading: boolean;
@@ -26,6 +33,7 @@ interface ActiveSessionState {
   addTarget: (target: CapturedTarget) => void;
   removeTarget: (tempId: string) => void;
   saveSession: () => Promise<string | null>;
+  quickSaveSession: (data: QuickSessionData) => Promise<string | null>;
   discardSession: () => void;
   clearError: () => void;
 }
@@ -261,6 +269,30 @@ export const useActiveSessionStore = create<ActiveSessionState>((set, get) => ({
 
   discardSession: () => {
     set({ activeSession: null });
+  },
+
+  quickSaveSession: async (data) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const sessionId = generateId();
+
+      await db.insert(sessions).values({
+        id: sessionId,
+        date: data.date,
+        location: data.location || null,
+        notes: data.notes || null,
+        weather: data.weather || null,
+        temperature: null,
+      });
+
+      set({ isLoading: false });
+      return sessionId;
+    } catch (error) {
+      console.error('[ActiveSessionStore] Failed to quick save session:', error);
+      set({ error: 'Failed to save quick session', isLoading: false });
+      return null;
+    }
   },
 
   clearError: () => set({ error: null }),

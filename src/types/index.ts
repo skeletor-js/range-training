@@ -170,6 +170,7 @@ export interface DrillWithStats {
   description: string | null;
   category: 'speed' | 'accuracy' | 'movement' | 'reload' | 'other' | null;
   scoringType: 'time' | 'points' | 'pass_fail' | 'hits' | null;
+  platform: 'handgun' | 'carbine' | 'both' | null;
   parTime: number | null;
   maxPoints: number | null;
   roundCount: number;
@@ -209,6 +210,7 @@ export interface BuiltinDrillDefinition {
   description: string;
   category: 'speed' | 'accuracy' | 'movement' | 'reload' | 'other';
   scoringType: 'time' | 'points' | 'pass_fail' | 'hits';
+  platform: 'handgun' | 'carbine' | 'both';
   parTime: number | null;
   maxPoints: number | null;
   roundCount: number;

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { DrillCard } from './DrillCard';
 import { Badge } from '@/components/ui/badge';
-import { DRILL_CATEGORIES, DRILL_CATEGORY_LABELS } from '@/lib/constants';
+import { DRILL_CATEGORIES, DRILL_CATEGORY_LABELS, DRILL_PLATFORMS, DRILL_PLATFORM_LABELS } from '@/lib/constants';
 import type { DrillWithStats } from '@/types';
-import type { DrillCategory } from '@/lib/constants';
+import type { DrillCategory, DrillPlatform } from '@/lib/constants';
 
 interface DrillListProps {
   drills: DrillWithStats[];
@@ -13,12 +13,17 @@ interface DrillListProps {
 
 export function DrillList({ drills, onEdit, onDelete }: DrillListProps) {
   const [selectedCategory, setSelectedCategory] = useState<DrillCategory | 'all'>('all');
+  const [selectedPlatform, setSelectedPlatform] = useState<DrillPlatform | 'all'>('all');
 
-  // Filter drills by category
-  const filteredDrills =
-    selectedCategory === 'all'
-      ? drills
-      : drills.filter((d) => d.category === selectedCategory);
+  // Filter drills by category and platform
+  const filteredDrills = drills.filter((d) => {
+    const matchesCategory = selectedCategory === 'all' || d.category === selectedCategory;
+    const matchesPlatform =
+      selectedPlatform === 'all' ||
+      d.platform === selectedPlatform ||
+      d.platform === 'both';
+    return matchesCategory && matchesPlatform;
+  });
 
   // Group by category
   const groupedDrills = DRILL_CATEGORIES.reduce(
@@ -34,6 +39,41 @@ export function DrillList({ drills, onEdit, onDelete }: DrillListProps) {
 
   return (
     <div className="space-y-6">
+      {/* Platform filter */}
+      <div className="flex flex-wrap gap-2">
+        <Badge
+          variant={selectedPlatform === 'all' ? 'default' : 'outline'}
+          className="cursor-pointer"
+          onClick={() => setSelectedPlatform('all')}
+        >
+          All Platforms
+        </Badge>
+        {DRILL_PLATFORMS.filter((p) => p !== 'both').map((platform) => {
+          const count = drills.filter(
+            (d) => d.platform === platform || d.platform === 'both'
+          ).length;
+          if (count === 0) return null;
+          return (
+            <Badge
+              key={platform}
+              variant={selectedPlatform === platform ? 'default' : 'outline'}
+              className={`cursor-pointer ${
+                platform === 'carbine'
+                  ? selectedPlatform === platform
+                    ? 'bg-amber-500 hover:bg-amber-600'
+                    : ''
+                  : selectedPlatform === platform
+                    ? 'bg-blue-500 hover:bg-blue-600'
+                    : ''
+              }`}
+              onClick={() => setSelectedPlatform(platform)}
+            >
+              {DRILL_PLATFORM_LABELS[platform]} ({count})
+            </Badge>
+          );
+        })}
+      </div>
+
       {/* Category filter */}
       <div className="flex flex-wrap gap-2">
         <Badge
@@ -41,7 +81,7 @@ export function DrillList({ drills, onEdit, onDelete }: DrillListProps) {
           className="cursor-pointer"
           onClick={() => setSelectedCategory('all')}
         >
-          All
+          All Categories
         </Badge>
         {DRILL_CATEGORIES.map((category) => {
           const count = drills.filter((d) => d.category === category).length;

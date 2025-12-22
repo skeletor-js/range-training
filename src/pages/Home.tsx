@@ -1,21 +1,34 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Plus, Target, CalendarDays, Flame, TrendingUp } from 'lucide-react';
+import { Plus, Target, CalendarDays, Flame, TrendingUp, ChevronDown, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { ActivityHeatmap } from '@/components/sessions/ActivityHeatmap';
 import { SessionCard } from '@/components/sessions/SessionCard';
+import { QuickSessionDialog } from '@/components/sessions/QuickSessionDialog';
+import { TrainingRecommendations } from '@/components/training/TrainingRecommendations';
+import { PerformanceInsights } from '@/components/sessions/PerformanceInsights';
 import { useSessionStore } from '@/stores/sessionStore';
+import { useRecommendationStore } from '@/stores/recommendationStore';
 import type { HeatmapDataPoint, DashboardStats } from '@/types';
 
 export function Home() {
   const navigate = useNavigate();
-  const { sessions, loadSessions, getHeatmapData, getDashboardStats, startSession } =
+  const { sessions, loadSessions, getHeatmapData, getDashboardStats, startSession, quickSaveSession } =
     useSessionStore();
+  const { recommendations, recentTargets, isLoading: recommendationsLoading, loadRecommendations } =
+    useRecommendationStore();
 
   const [heatmapData, setHeatmapData] = useState<HeatmapDataPoint[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [quickSessionOpen, setQuickSessionOpen] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -24,17 +37,31 @@ export function Home() {
       const [heatmap, dashStats] = await Promise.all([
         getHeatmapData(),
         getDashboardStats(),
+        loadRecommendations(),
       ]);
       setHeatmapData(heatmap);
       setStats(dashStats);
       setIsLoading(false);
     }
     loadData();
-  }, [loadSessions, getHeatmapData, getDashboardStats]);
+  }, [loadSessions, getHeatmapData, getDashboardStats, loadRecommendations]);
 
   const handleStartSession = () => {
     startSession();
     navigate('/capture');
+  };
+
+  const handleQuickSave = async (data: { date: string; location?: string; notes?: string; weather?: string }) => {
+    const sessionId = await quickSaveSession(data);
+    if (sessionId) {
+      // Reload stats after quick save
+      const [heatmap, dashStats] = await Promise.all([
+        getHeatmapData(),
+        getDashboardStats(),
+      ]);
+      setHeatmapData(heatmap);
+      setStats(dashStats);
+    }
   };
 
   const recentSessions = sessions.slice(0, 3);
@@ -59,11 +86,33 @@ export function Home() {
             Track your progress and improve
           </p>
         </div>
-        <Button onClick={handleStartSession}>
-          <Plus className="h-4 w-4 mr-1" />
-          Start Session
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button>
+              <Plus className="h-4 w-4 mr-1" />
+              New Session
+              <ChevronDown className="h-4 w-4 ml-1" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleStartSession}>
+              <Target className="h-4 w-4 mr-2" />
+              Full Session with Targets
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setQuickSessionOpen(true)}>
+              <Zap className="h-4 w-4 mr-2" />
+              Quick Log (Date + Notes)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      {/* Quick Session Dialog */}
+      <QuickSessionDialog
+        open={quickSessionOpen}
+        onOpenChange={setQuickSessionOpen}
+        onSave={handleQuickSave}
+      />
 
       {/* Stats Cards */}
       {stats && (
@@ -112,10 +161,30 @@ export function Home() {
         </div>
       )}
 
+      {/* Performance Insights */}
+      {recentTargets.length > 0 && (
+        <div className="mb-6">
+          <PerformanceInsights
+            targets={recentTargets}
+            isLoading={recommendationsLoading}
+          />
+        </div>
+      )}
+
       {/* Activity Heatmap */}
       <div className="mb-6">
         <ActivityHeatmap data={heatmapData} />
       </div>
+
+      {/* Training Recommendations */}
+      {stats && stats.totalSessions > 0 && (
+        <div className="mb-6">
+          <TrainingRecommendations
+            recommendations={recommendations}
+            isLoading={recommendationsLoading}
+          />
+        </div>
+      )}
 
       {/* Recent Sessions */}
       <div>
@@ -150,7 +219,7 @@ export function Home() {
               <SessionCard
                 key={session.id}
                 session={session}
-                onSelect={() => navigate('/sessions')}
+                onSelect={() => navigate(`/sessions/${session.id}`)}
               />
             ))}
           </div>
