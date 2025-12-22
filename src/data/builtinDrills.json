@@ -421,6 +421,278 @@
           "threshold": 1.0
         }
       ]
+    },
+    {
+      "id": "builtin-carbine-bill-drill",
+      "name": "Carbine Bill Drill",
+      "description": "From low ready, fire 6 rounds at a single target as fast as possible while keeping all hits in the A-zone. Tests rifle mount speed, trigger control, and recoil management. The carbine version of the classic Bill Drill.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 1.5,
+      "maxPoints": null,
+      "roundCount": 6,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 3.5
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 2.5
+        },
+        {
+          "level": "Advanced",
+          "threshold": 2.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 1.5
+        }
+      ]
+    },
+    {
+      "id": "builtin-vtac-1-5",
+      "name": "VTAC 1-5 Drill",
+      "description": "Viking Tactics drill designed by Kyle Lamb. From low ready, engage 3 targets: 1 shot left, 2 center, 3 right, 4 center, 5 left (15 rounds total). Tests rapid target transitions and breaking the double-tap habit.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 5.0,
+      "maxPoints": null,
+      "roundCount": 15,
+      "targetCount": 3,
+      "distanceYards": 5,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 7.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 5.5
+        },
+        {
+          "level": "Advanced",
+          "threshold": 4.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 3.5
+        }
+      ]
+    },
+    {
+      "id": "builtin-appleseed-aqt",
+      "name": "Appleseed AQT",
+      "description": "Project Appleseed's Army Qualification Test. 40 rounds across 4 stages from standing, sitting, and prone at 25 yards using scaled silhouettes simulating 100-400 yard targets. Stage 4 counts double. Score 210+ to earn 'Rifleman' status.",
+      "category": "accuracy",
+      "scoringType": "points",
+      "parTime": null,
+      "maxPoints": 250,
+      "roundCount": 40,
+      "targetCount": 4,
+      "distanceYards": 25,
+      "benchmarks": [
+        {
+          "level": "Marksman",
+          "threshold": 170
+        },
+        {
+          "level": "Sharpshooter",
+          "threshold": 190
+        },
+        {
+          "level": "Rifleman",
+          "threshold": 210
+        },
+        {
+          "level": "Expert",
+          "threshold": 225
+        }
+      ]
+    },
+    {
+      "id": "builtin-carbine-ready-up",
+      "name": "Carbine Ready-Up",
+      "description": "From low ready position, mount the rifle and fire one accurate shot on target. Measures pure rifle presentation speed to first accurate hit. Start on safe with finger off trigger.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 1.0,
+      "maxPoints": null,
+      "roundCount": 1,
+      "targetCount": 1,
+      "distanceYards": 25,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 1.5
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 1.25
+        },
+        {
+          "level": "Advanced",
+          "threshold": 1.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 0.75
+        }
+      ]
+    },
+    {
+      "id": "builtin-carbine-reload",
+      "name": "Carbine Emergency Reload",
+      "description": "Start with one round in chamber and empty magazine. Fire 1 shot, perform emergency reload (bolt locked back), fire 1 more shot. Tests magazine change speed under stress with the rifle platform.",
+      "category": "reload",
+      "scoringType": "time",
+      "parTime": 3.0,
+      "maxPoints": null,
+      "roundCount": 2,
+      "targetCount": 1,
+      "distanceYards": 7,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 5.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 4.0
+        },
+        {
+          "level": "Advanced",
+          "threshold": 3.0
+        },
+        {
+          "level": "Expert",
+          "threshold": 2.5
+        }
+      ]
+    },
+    {
+      "id": "builtin-ihack-carbine",
+      "name": "iHack Drill (Carbine)",
+      "description": "Indoor adaptation of the Hackathorn 3-Second Headshot Standards. Three 2-inch circles at 5 yards. String 1: L-R one shot each. String 2: R-L one shot each. String 3: Center, then outside targets. 3 seconds per string, 9 rounds total.",
+      "category": "accuracy",
+      "scoringType": "hits",
+      "parTime": 3.0,
+      "maxPoints": 9,
+      "roundCount": 9,
+      "targetCount": 3,
+      "distanceYards": 5,
+      "benchmarks": [
+        {
+          "level": "Needs Work",
+          "threshold": 5
+        },
+        {
+          "level": "Passing",
+          "threshold": 7
+        },
+        {
+          "level": "Excellent",
+          "threshold": 9
+        }
+      ]
+    },
+    {
+      "id": "builtin-carbine-box-drill",
+      "name": "Carbine Box Drill",
+      "description": "Engage two targets: 2 shots to body of T1, transition to T2 for 2 body shots + 1 headshot, transition back to T1 for 1 headshot. Tests rapid transitions and shot placement at speed.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 5.0,
+      "maxPoints": null,
+      "roundCount": 6,
+      "targetCount": 2,
+      "distanceYards": 7,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 7.0
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 5.5
+        },
+        {
+          "level": "Advanced",
+          "threshold": 4.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 3.5
+        }
+      ]
+    },
+    {
+      "id": "builtin-carbine-failure-drill",
+      "name": "Carbine Failure Drill",
+      "description": "Two shots to the body, one to the head at extended carbine distance. Also known as the Mozambique Drill. Tests the ability to deliver fight-stopping hits with a rifle at realistic engagement distances.",
+      "category": "speed",
+      "scoringType": "time",
+      "parTime": 2.5,
+      "maxPoints": null,
+      "roundCount": 3,
+      "targetCount": 1,
+      "distanceYards": 25,
+      "benchmarks": [
+        {
+          "level": "Novice",
+          "threshold": 4.5
+        },
+        {
+          "level": "Intermediate",
+          "threshold": 3.5
+        },
+        {
+          "level": "Advanced",
+          "threshold": 2.5
+        },
+        {
+          "level": "Expert",
+          "threshold": 2.0
+        }
+      ]
+    },
+    {
+      "id": "builtin-defoor-carbine-test",
+      "name": "Defoor Carbine Test 1",
+      "description": "Kyle Defoor's carbine standard. From standing low ready (on safe), fire 6 rounds at 10 yards (<2s), 6 at 20 yards (<3.25s), 6 at 30 yards (<4.5s). All hits must be A-zone. Tests speed and accuracy at increasing distances.",
+      "category": "speed",
+      "scoringType": "pass_fail",
+      "parTime": null,
+      "maxPoints": null,
+      "roundCount": 18,
+      "targetCount": 1,
+      "distanceYards": null,
+      "benchmarks": [
+        {
+          "level": "Pass",
+          "threshold": 1
+        }
+      ]
+    },
+    {
+      "id": "builtin-moat-carbine-standard",
+      "name": "MOAT Carbine Standard",
+      "description": "Multi-distance stress test. Run to 50 yards and fire 5 shots at large rectangle, run to 10 yards for 3 precision shots in small circle, run to 25 yards for 2 shots each in two small squares. Tests marksmanship while winded.",
+      "category": "other",
+      "scoringType": "pass_fail",
+      "parTime": 60.0,
+      "maxPoints": null,
+      "roundCount": 12,
+      "targetCount": 4,
+      "distanceYards": null,
+      "benchmarks": [
+        {
+          "level": "Pass",
+          "threshold": 1
+        }
+      ]
     }
   ]
 }
