@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS drills (
   description TEXT,
   category TEXT CHECK(category IN ('speed', 'accuracy', 'movement', 'reload', 'other')),
   scoring_type TEXT CHECK(scoring_type IN ('time', 'points', 'pass_fail', 'hits')),
+  platform TEXT DEFAULT 'handgun',
   par_time REAL,
   max_points INTEGER,
   round_count INTEGER NOT NULL,
@@ -189,10 +190,6 @@ CREATE TABLE IF NOT EXISTS firearm_ammo_compatibility (
   updated_at TEXT DEFAULT (datetime('now'))
 );
 
--- Unique index for firearm-ammo pair
-CREATE UNIQUE INDEX IF NOT EXISTS idx_firearm_ammo_unique
-ON firearm_ammo_compatibility(firearm_id, ammo_id);
-
 -- Malfunction Logs
 CREATE TABLE IF NOT EXISTS malfunctions (
   id TEXT PRIMARY KEY,
@@ -204,18 +201,65 @@ CREATE TABLE IF NOT EXISTS malfunctions (
   created_at TEXT DEFAULT (datetime('now'))
 );
 
--- Indexes for malfunction lookups
-CREATE INDEX IF NOT EXISTS idx_malfunctions_session ON malfunctions(session_id);
-CREATE INDEX IF NOT EXISTS idx_malfunctions_ammo ON malfunctions(ammo_id);
+-- Saved Range Locations
+CREATE TABLE IF NOT EXISTS ranges (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  address TEXT,
+  city TEXT,
+  state TEXT,
+  phone TEXT,
+  website TEXT,
+  range_type TEXT CHECK(range_type IN ('indoor', 'outdoor', 'both')),
+  max_distance INTEGER,
+  notes TEXT,
+  is_favorite INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+
+-- Session Templates
+CREATE TABLE IF NOT EXISTS session_templates (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  location TEXT,
+  range_id TEXT REFERENCES ranges(id),
+  firearm_ids TEXT,
+  ammo_presets TEXT,
+  default_notes TEXT,
+  is_favorite INTEGER DEFAULT 0,
+  usage_count INTEGER DEFAULT 0,
+  last_used_at TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
 
 -- Schema Version for Migrations
 CREATE TABLE IF NOT EXISTS schema_version (
   version INTEGER PRIMARY KEY,
   applied_at TEXT DEFAULT (datetime('now'))
 );
+
+-- Performance Indexes
+CREATE INDEX IF NOT EXISTS idx_sessions_date ON sessions(date);
+CREATE INDEX IF NOT EXISTS idx_targets_session ON targets(session_id);
+CREATE INDEX IF NOT EXISTS idx_shots_target ON shots(target_id);
+CREATE INDEX IF NOT EXISTS idx_drill_attempts_drill ON drill_attempts(drill_id);
+CREATE INDEX IF NOT EXISTS idx_drill_attempts_session ON drill_attempts(session_id);
+CREATE INDEX IF NOT EXISTS idx_drill_attempts_firearm ON drill_attempts(firearm_id);
+CREATE INDEX IF NOT EXISTS idx_ammo_purchases_ammo ON ammo_purchases(ammo_id);
+CREATE INDEX IF NOT EXISTS idx_ammo_purchases_date ON ammo_purchases(purchase_date);
+CREATE INDEX IF NOT EXISTS idx_session_firearms_session ON session_firearms(session_id);
+CREATE INDEX IF NOT EXISTS idx_session_ammo_sf ON session_ammo(session_firearm_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_firearm_ammo_unique ON firearm_ammo_compatibility(firearm_id, ammo_id);
+CREATE INDEX IF NOT EXISTS idx_malfunctions_session ON malfunctions(session_id);
+CREATE INDEX IF NOT EXISTS idx_malfunctions_ammo ON malfunctions(ammo_id);
+CREATE INDEX IF NOT EXISTS idx_ranges_favorite ON ranges(is_favorite);
+CREATE INDEX IF NOT EXISTS idx_session_templates_favorite ON session_templates(is_favorite);
 `;
 
-export const CURRENT_SCHEMA_VERSION = 6;
+export const CURRENT_SCHEMA_VERSION = 9;
 
 // Track initialization state to prevent duplicate calls
 let isInitialized = false;
