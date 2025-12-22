@@ -31,6 +31,10 @@ interface SettingsState {
   currentTheme: string; // 'Default', 'Ocean', etc., or 'Custom'
   customTheme: Theme | null;
 
+  // Debug Mode (hidden developer tools)
+  debugMode: boolean;
+  debugTapCount: number;
+
   // Actions
   toggleHighGlareMode: () => void;
   toggleSound: () => void;
@@ -49,6 +53,11 @@ interface SettingsState {
   updateThemeColor: (key: ThemeColorKey, value: string) => void;
   updateThemeRadius: (radius: string) => void;
   resetSettings: () => void;
+
+  // Debug Actions
+  incrementDebugTap: () => void;
+  resetDebugTap: () => void;
+  disableDebugMode: () => void;
 }
 
 const defaultSettings = {
@@ -66,7 +75,12 @@ const defaultSettings = {
   lowStockWarningsEnabled: true,
   currentTheme: 'Default',
   customTheme: null,
+  debugMode: false,
+  debugTapCount: 0,
 };
+
+// Timeout ID for resetting tap count
+let debugTapTimeout: ReturnType<typeof setTimeout> | null = null;
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
@@ -142,9 +156,62 @@ export const useSettingsStore = create<SettingsState>()(
 
       resetSettings: () =>
         set(defaultSettings),
+
+      // Debug Mode Actions
+      incrementDebugTap: () => {
+        // Clear existing timeout
+        if (debugTapTimeout) {
+          clearTimeout(debugTapTimeout);
+        }
+
+        set((state) => {
+          const newCount = state.debugTapCount + 1;
+
+          // Auto-enable debug mode at 5 taps
+          if (newCount >= 5) {
+            return { debugTapCount: 0, debugMode: true };
+          }
+
+          // Set timeout to reset count after 2 seconds
+          debugTapTimeout = setTimeout(() => {
+            set({ debugTapCount: 0 });
+          }, 2000);
+
+          return { debugTapCount: newCount };
+        });
+      },
+
+      resetDebugTap: () => {
+        if (debugTapTimeout) {
+          clearTimeout(debugTapTimeout);
+          debugTapTimeout = null;
+        }
+        set({ debugTapCount: 0 });
+      },
+
+      disableDebugMode: () =>
+        set({ debugMode: false, debugTapCount: 0 }),
     }),
     {
       name: 'range-app-settings',
+      partialize: (state) => ({
+        // Only persist these values (exclude debugTapCount as it's transient)
+        highGlareMode: state.highGlareMode,
+        soundEnabled: state.soundEnabled,
+        hapticEnabled: state.hapticEnabled,
+        defaultTimerMode: state.defaultTimerMode,
+        delayMode: state.delayMode,
+        fixedDelay: state.fixedDelay,
+        randomDelayMin: state.randomDelayMin,
+        randomDelayMax: state.randomDelayMax,
+        shotDetectionEnabled: state.shotDetectionEnabled,
+        shotDetectionSensitivity: state.shotDetectionSensitivity,
+        lowStockThreshold: state.lowStockThreshold,
+        lowStockWarningsEnabled: state.lowStockWarningsEnabled,
+        currentTheme: state.currentTheme,
+        customTheme: state.customTheme,
+        debugMode: state.debugMode,
+      }),
     }
   )
 );

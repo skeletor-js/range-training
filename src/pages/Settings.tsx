@@ -11,6 +11,7 @@ import {
   AboutCard,
   ThemeSettingsCard,
   SessionTemplatesCard,
+  DebugPanel,
 } from '@/components/settings';
 
 interface DatabaseStats {
@@ -38,6 +39,7 @@ export function Settings() {
     shotDetectionSensitivity,
     lowStockThreshold,
     lowStockWarningsEnabled,
+    debugMode,
     toggleHighGlareMode,
     toggleSound,
     toggleHaptic,
@@ -125,6 +127,9 @@ export function Settings() {
           <p>{error}</p>
         </div>
       )}
+
+      {/* Debug Panel - Only visible in debug mode */}
+      {debugMode && <DebugPanel onRefreshStats={loadStats} />}
 
       <DatabaseStatsCard stats={stats} />
 
