@@ -28,14 +28,14 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
       CREATE UNIQUE INDEX IF NOT EXISTS idx_firearm_ammo_unique
       ON firearm_ammo_compatibility(firearm_id, ammo_id)
     `);
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (2)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (2)`);
   }
 
   // v2 -> v3: Seed built-in drills
   if (fromVersion < 3) {
     console.log('[DB] Applying migration v3: Seeding built-in drills');
     await seedBuiltinDrills();
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (3)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (3)`);
   }
 
   // v3 -> v4: Add performance indexes
@@ -64,7 +64,7 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     await db.run(sql`CREATE INDEX IF NOT EXISTS idx_session_firearms_session ON session_firearms(session_id)`);
     await db.run(sql`CREATE INDEX IF NOT EXISTS idx_session_ammo_sf ON session_ammo(session_firearm_id)`);
 
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (4)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (4)`);
     console.log('[DB] Performance indexes created');
   }
 
@@ -101,7 +101,7 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     await db.run(sql`DROP TABLE firearms`);
     await db.run(sql`ALTER TABLE firearms_new RENAME TO firearms`);
 
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (5)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (5)`);
     console.log('[DB] Firearm types expanded for armory');
   }
 
@@ -124,7 +124,7 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     await db.run(sql`CREATE INDEX IF NOT EXISTS idx_malfunctions_session ON malfunctions(session_id)`);
     await db.run(sql`CREATE INDEX IF NOT EXISTS idx_malfunctions_ammo ON malfunctions(ammo_id)`);
 
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (6)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (6)`);
     console.log('[DB] Malfunctions table created');
   }
 
@@ -146,7 +146,7 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     // Update both-platform drills (can be done with any platform)
     await db.run(sql`UPDATE drills SET platform = 'both' WHERE id = 'builtin-cold-start'`);
 
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (7)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (7)`);
     console.log('[DB] Platform column added to drills');
   }
 
@@ -174,7 +174,7 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
 
     await db.run(sql`CREATE INDEX IF NOT EXISTS idx_ranges_favorite ON ranges(is_favorite)`);
 
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (8)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (8)`);
     console.log('[DB] Ranges table created');
   }
 
@@ -202,7 +202,7 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
 
     await db.run(sql`CREATE INDEX IF NOT EXISTS idx_session_templates_favorite ON session_templates(is_favorite)`);
 
-    await db.run(sql`INSERT INTO schema_version (version) VALUES (9)`);
+    await db.run(sql`INSERT OR IGNORE INTO schema_version (version) VALUES (9)`);
     console.log('[DB] Session templates table created');
   }
 

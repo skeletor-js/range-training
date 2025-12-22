@@ -318,11 +318,19 @@ async function doInitialize(): Promise<void> {
       console.log('[DB] Schema created successfully (version', CURRENT_SCHEMA_VERSION, ')');
     } else {
       // Check for migrations
-      const versionResult = await db.all<{ version: number }>(sql`
+      const versionResult = await db.all(sql`
         SELECT version FROM schema_version ORDER BY version DESC LIMIT 1
       `);
 
-      const currentVersion = versionResult[0]?.version ?? 0;
+      // Handle different result formats from Drizzle ORM
+      let currentVersion = 0;
+      if (versionResult.length > 0) {
+        const row = versionResult[0] as Record<string, unknown>;
+        // Handle both {version: N} and array [N] formats
+        currentVersion = typeof row === 'object' && 'version' in row
+          ? Number(row.version)
+          : Array.isArray(row) ? Number(row[0]) : 0;
+      }
       console.log('[DB] Current schema version:', currentVersion);
 
       if (currentVersion < CURRENT_SCHEMA_VERSION) {
