@@ -1,17 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Shuffle, ChevronRight } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DrillList, DrillForm } from '@/components/drills';
 import { GoalList, GoalForm } from '@/components/goals';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { useDrillStore } from '@/stores/drillStore';
 import { useGoalsStore } from '@/stores/goalsStore';
+import { DRILL_CATEGORY_LABELS, DRILL_PLATFORM_LABELS } from '@/lib/constants';
 import type { DrillWithStats, Goal } from '@/types';
 import type { DrillFormData, GoalFormData } from '@/lib/validations';
 
 export function Training() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('drills');
 
   // Drill state
@@ -27,6 +39,8 @@ export function Training() {
   const [drillFormOpen, setDrillFormOpen] = useState(false);
   const [editingDrill, setEditingDrill] = useState<DrillWithStats | null>(null);
   const [deletingDrill, setDeletingDrill] = useState<DrillWithStats | null>(null);
+  const [randomDrill, setRandomDrill] = useState<DrillWithStats | null>(null);
+  const [randomDialogOpen, setRandomDialogOpen] = useState(false);
 
   // Goals state
   const {
@@ -104,6 +118,28 @@ export function Training() {
     await toggleComplete(goal.id);
   };
 
+  const handleRandomDrill = () => {
+    if (drillsWithStats.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * drillsWithStats.length);
+    setRandomDrill(drillsWithStats[randomIndex]);
+    setRandomDialogOpen(true);
+  };
+
+  const handleShuffleAgain = () => {
+    if (drillsWithStats.length === 0) return;
+    let newDrill: DrillWithStats;
+    // Try to get a different drill if possible
+    if (drillsWithStats.length > 1) {
+      do {
+        const randomIndex = Math.floor(Math.random() * drillsWithStats.length);
+        newDrill = drillsWithStats[randomIndex];
+      } while (newDrill.id === randomDrill?.id);
+    } else {
+      newDrill = drillsWithStats[0];
+    }
+    setRandomDrill(newDrill);
+  };
+
   return (
     <div className="p-4">
       <PageHeader
@@ -134,7 +170,15 @@ export function Training() {
         </TabsList>
 
         <TabsContent value="drills" className="mt-4">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end gap-2 mb-4">
+            <Button
+              variant="outline"
+              onClick={handleRandomDrill}
+              disabled={drillsWithStats.length === 0}
+            >
+              <Shuffle className="h-4 w-4 mr-2" />
+              Surprise Me
+            </Button>
             <Button
               onClick={() => {
                 setEditingDrill(null);
@@ -232,6 +276,77 @@ export function Training() {
         onConfirm={handleConfirmDeleteGoal}
         variant="destructive"
       />
+
+      {/* Random Drill Dialog */}
+      <Dialog open={randomDialogOpen} onOpenChange={setRandomDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Shuffle className="h-5 w-5" />
+              Random Drill
+            </DialogTitle>
+          </DialogHeader>
+
+          {randomDrill && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">{randomDrill.name}</CardTitle>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {randomDrill.category && (
+                    <Badge variant="outline">
+                      {DRILL_CATEGORY_LABELS[randomDrill.category]}
+                    </Badge>
+                  )}
+                  {randomDrill.platform && randomDrill.platform !== 'both' && (
+                    <Badge
+                      variant="secondary"
+                      className={
+                        randomDrill.platform === 'carbine'
+                          ? 'bg-amber-500/20 text-amber-600'
+                          : 'bg-blue-500/20 text-blue-600'
+                      }
+                    >
+                      {DRILL_PLATFORM_LABELS[randomDrill.platform]}
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                {randomDrill.description && (
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {randomDrill.description}
+                  </p>
+                )}
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <span>{randomDrill.roundCount} rounds</span>
+                  {randomDrill.distanceYards && (
+                    <span>{randomDrill.distanceYards} yards</span>
+                  )}
+                  {randomDrill.parTime && <span>Par: {randomDrill.parTime}s</span>}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={handleShuffleAgain}>
+              <Shuffle className="h-4 w-4 mr-2" />
+              Try Another
+            </Button>
+            <Button
+              onClick={() => {
+                setRandomDialogOpen(false);
+                if (randomDrill) {
+                  navigate(`/drills/${randomDrill.id}`);
+                }
+              }}
+            >
+              Go to Drill
+              <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

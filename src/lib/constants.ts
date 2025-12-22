@@ -257,3 +257,13 @@ export const SCORING_TYPE_LABELS: Record<ScoringType, string> = {
   pass_fail: 'Pass/Fail',
   hits: 'Hits',
 };
+
+// Drill platforms
+export const DRILL_PLATFORMS = ['handgun', 'carbine', 'both'] as const;
+export type DrillPlatform = (typeof DRILL_PLATFORMS)[number];
+
+export const DRILL_PLATFORM_LABELS: Record<DrillPlatform, string> = {
+  handgun: 'Handgun',
+  carbine: 'Carbine/Rifle',
+  both: 'Any Platform',
+};

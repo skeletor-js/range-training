@@ -90,6 +90,7 @@ export const drillSchema = z.object({
   description: z.string().max(1000).nullable().optional(),
   category: z.enum(['speed', 'accuracy', 'movement', 'reload', 'other']),
   scoringType: z.enum(['time', 'points', 'pass_fail', 'hits']),
+  platform: z.enum(['handgun', 'carbine', 'both']).default('handgun'),
   parTime: z.number().positive().nullable().optional(),
   maxPoints: z.number().int().positive().nullable().optional(),
   roundCount: z.number().int().positive('Round count must be at least 1'),

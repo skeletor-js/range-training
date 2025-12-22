@@ -35,11 +35,15 @@ export function Settings() {
     hapticEnabled,
     shotDetectionEnabled,
     shotDetectionSensitivity,
+    lowStockThreshold,
+    lowStockWarningsEnabled,
     toggleHighGlareMode,
     toggleSound,
     toggleHaptic,
     toggleShotDetection,
     setShotDetectionSensitivity,
+    setLowStockThreshold,
+    toggleLowStockWarnings,
   } = useSettingsStore();
 
   useEffect(() => {
@@ -151,11 +155,15 @@ export function Settings() {
         hapticEnabled={hapticEnabled}
         shotDetectionEnabled={shotDetectionEnabled}
         shotDetectionSensitivity={shotDetectionSensitivity}
+        lowStockThreshold={lowStockThreshold}
+        lowStockWarningsEnabled={lowStockWarningsEnabled}
         onToggleHighGlare={toggleHighGlareMode}
         onToggleSound={toggleSound}
         onToggleHaptic={toggleHaptic}
         onToggleShotDetection={toggleShotDetection}
         onShotDetectionSensitivityChange={setShotDetectionSensitivity}
+        onToggleLowStockWarnings={toggleLowStockWarnings}
+        onLowStockThresholdChange={setLowStockThreshold}
       />
 
       <AboutCard />

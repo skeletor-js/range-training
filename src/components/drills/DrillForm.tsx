@@ -22,6 +22,8 @@ import {
   DRILL_CATEGORY_LABELS,
   SCORING_TYPES,
   SCORING_TYPE_LABELS,
+  DRILL_PLATFORMS,
+  DRILL_PLATFORM_LABELS,
 } from '@/lib/constants';
 import { drillSchema, type DrillFormData } from '@/lib/validations';
 import type { Drill } from '@/types';
@@ -39,6 +41,7 @@ export function DrillForm({ open, onOpenChange, drill, onSave }: DrillFormProps)
     description: '',
     category: 'speed',
     scoringType: 'time',
+    platform: 'handgun',
     parTime: null,
     maxPoints: null,
     roundCount: 1,
@@ -57,6 +60,7 @@ export function DrillForm({ open, onOpenChange, drill, onSave }: DrillFormProps)
         description: drill.description ?? '',
         category: drill.category ?? 'speed',
         scoringType: drill.scoringType ?? 'time',
+        platform: drill.platform ?? 'handgun',
         parTime: drill.parTime ?? null,
         maxPoints: drill.maxPoints ?? null,
         roundCount: drill.roundCount,
@@ -69,6 +73,7 @@ export function DrillForm({ open, onOpenChange, drill, onSave }: DrillFormProps)
         description: '',
         category: 'speed',
         scoringType: 'time',
+        platform: 'handgun',
         parTime: null,
         maxPoints: null,
         roundCount: 1,
@@ -196,6 +201,30 @@ export function DrillForm({ open, onOpenChange, drill, onSave }: DrillFormProps)
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="platform">Platform *</Label>
+              <Select
+                value={formData.platform}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    platform: value as typeof prev.platform,
+                  }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DRILL_PLATFORMS.map((platform) => (
+                    <SelectItem key={platform} value={platform}>
+                      {DRILL_PLATFORM_LABELS[platform]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

@@ -128,6 +128,7 @@ export const drills = sqliteTable('drills', {
   description: text('description'),
   category: text('category', { enum: ['speed', 'accuracy', 'movement', 'reload', 'other'] }),
   scoringType: text('scoring_type', { enum: ['time', 'points', 'pass_fail', 'hits'] }),
+  platform: text('platform', { enum: ['handgun', 'carbine', 'both'] }).default('handgun'),
   parTime: real('par_time'),
   maxPoints: integer('max_points'),
   roundCount: integer('round_count').notNull(),

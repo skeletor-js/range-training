@@ -1,8 +1,9 @@
-import { Sun, Volume2, Vibrate, Mic } from 'lucide-react';
+import { Sun, Volume2, Vibrate, Mic, Package } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 
 interface DisplaySettingsCardProps {
   highGlareMode: boolean;
@@ -10,11 +11,15 @@ interface DisplaySettingsCardProps {
   hapticEnabled: boolean;
   shotDetectionEnabled: boolean;
   shotDetectionSensitivity: number;
+  lowStockThreshold: number;
+  lowStockWarningsEnabled: boolean;
   onToggleHighGlare: () => void;
   onToggleSound: () => void;
   onToggleHaptic: () => void;
   onToggleShotDetection: () => void;
   onShotDetectionSensitivityChange: (value: number) => void;
+  onToggleLowStockWarnings: () => void;
+  onLowStockThresholdChange: (value: number) => void;
 }
 
 export function DisplaySettingsCard({
@@ -23,11 +28,15 @@ export function DisplaySettingsCard({
   hapticEnabled,
   shotDetectionEnabled,
   shotDetectionSensitivity,
+  lowStockThreshold,
+  lowStockWarningsEnabled,
   onToggleHighGlare,
   onToggleSound,
   onToggleHaptic,
   onToggleShotDetection,
   onShotDetectionSensitivityChange,
+  onToggleLowStockWarnings,
+  onLowStockThresholdChange,
 }: DisplaySettingsCardProps) {
   return (
     <Card className="mb-6">
@@ -113,6 +122,42 @@ export function DisplaySettingsCard({
               />
               <p className="text-xs text-muted-foreground">
                 Auto-stop timer when gunshot detected via microphone
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Low Stock Warnings */}
+        <div className="space-y-3 pt-2 border-t">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Package className="h-4 w-4 text-muted-foreground" />
+              <Label htmlFor="low-stock">Low Stock Warnings</Label>
+            </div>
+            <Switch
+              id="low-stock"
+              checked={lowStockWarningsEnabled}
+              onCheckedChange={onToggleLowStockWarnings}
+            />
+          </div>
+
+          {lowStockWarningsEnabled && (
+            <div className="pl-6 space-y-2">
+              <div className="flex items-center justify-between gap-4">
+                <Label htmlFor="threshold" className="text-sm text-muted-foreground">
+                  Threshold (rounds)
+                </Label>
+                <Input
+                  id="threshold"
+                  type="number"
+                  min={1}
+                  value={lowStockThreshold}
+                  onChange={(e) => onLowStockThresholdChange(parseInt(e.target.value) || 50)}
+                  className="w-24"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Show warning when ammo count falls below this number
               </p>
             </div>
           )}

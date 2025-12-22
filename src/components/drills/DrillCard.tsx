@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { PersonalBestBadge } from './PersonalBestBadge';
-import { DRILL_CATEGORY_LABELS } from '@/lib/constants';
+import { DRILL_CATEGORY_LABELS, DRILL_PLATFORM_LABELS } from '@/lib/constants';
 import type { DrillWithStats } from '@/types';
 
 interface DrillCardProps {
@@ -26,6 +26,10 @@ export function DrillCard({ drill, onEdit, onDelete }: DrillCardProps) {
     ? DRILL_CATEGORY_LABELS[drill.category]
     : 'Other';
 
+  const platformLabel = drill.platform
+    ? DRILL_PLATFORM_LABELS[drill.platform]
+    : null;
+
   const handleClick = () => {
     navigate(`/drills/${drill.id}`);
   };
@@ -40,6 +44,18 @@ export function DrillCard({ drill, onEdit, onDelete }: DrillCardProps) {
               <Badge variant="outline" className="shrink-0 text-xs">
                 {categoryLabel}
               </Badge>
+              {platformLabel && drill.platform !== 'both' && (
+                <Badge
+                  variant="secondary"
+                  className={`shrink-0 text-xs ${
+                    drill.platform === 'carbine'
+                      ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
+                      : 'bg-blue-500/20 text-blue-600 dark:text-blue-400'
+                  }`}
+                >
+                  {platformLabel}
+                </Badge>
+              )}
               {drill.isBuiltin && (
                 <Badge variant="secondary" className="shrink-0 text-xs">
                   Built-in

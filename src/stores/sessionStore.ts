@@ -31,6 +31,13 @@ export function useSessionStore() {
       }
       return sessionId;
     },
+    quickSaveSession: async (data: { date: string; location?: string; notes?: string; weather?: string }) => {
+      const sessionId = await activeStore.quickSaveSession(data);
+      if (sessionId) {
+        await listStore.loadSessions();
+      }
+      return sessionId;
+    },
     discardSession: activeStore.discardSession,
 
     // Session list

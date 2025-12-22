@@ -19,7 +19,7 @@ export async function seedBuiltinDrills(): Promise<void> {
       // Insert the drill
       await db.run(sql`
         INSERT INTO drills (
-          id, name, description, category, scoring_type,
+          id, name, description, category, scoring_type, platform,
           par_time, max_points, round_count, target_count,
           distance_yards, is_builtin, created_at
         ) VALUES (
@@ -28,6 +28,7 @@ export async function seedBuiltinDrills(): Promise<void> {
           ${drill.description},
           ${drill.category},
           ${drill.scoringType},
+          ${drill.platform || 'handgun'},
           ${drill.parTime},
           ${drill.maxPoints},
           ${drill.roundCount},

@@ -128,5 +128,27 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     console.log('[DB] Malfunctions table created');
   }
 
+  // v6 -> v7: Add platform column to drills and update existing built-in drills
+  if (fromVersion < 7) {
+    console.log('[DB] Applying migration v7: Adding platform column to drills');
+
+    // Add platform column
+    await db.run(sql`ALTER TABLE drills ADD COLUMN platform TEXT DEFAULT 'handgun'`);
+
+    // Update carbine drills
+    await db.run(sql`UPDATE drills SET platform = 'carbine' WHERE id LIKE 'builtin-carbine%'`);
+    await db.run(sql`UPDATE drills SET platform = 'carbine' WHERE id = 'builtin-vtac-1-5'`);
+    await db.run(sql`UPDATE drills SET platform = 'carbine' WHERE id = 'builtin-appleseed-aqt'`);
+    await db.run(sql`UPDATE drills SET platform = 'carbine' WHERE id = 'builtin-ihack-carbine'`);
+    await db.run(sql`UPDATE drills SET platform = 'carbine' WHERE id = 'builtin-defoor-carbine-test'`);
+    await db.run(sql`UPDATE drills SET platform = 'carbine' WHERE id = 'builtin-moat-carbine-standard'`);
+
+    // Update both-platform drills (can be done with any platform)
+    await db.run(sql`UPDATE drills SET platform = 'both' WHERE id = 'builtin-cold-start'`);
+
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (7)`);
+    console.log('[DB] Platform column added to drills');
+  }
+
   console.log('[DB] Migrations complete');
 }

@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Trash2, Plus, History, Link2 } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2, Plus, History, Link2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { StarRating } from './StarRating';
 import { RatingBadge } from './RatingBadge';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 interface AmmoCardProps {
   ammo: Ammo;
@@ -34,8 +35,9 @@ export function AmmoCard({
   onViewHistory,
   onViewCompatibility,
 }: AmmoCardProps) {
+  const { lowStockThreshold, lowStockWarningsEnabled } = useSettingsStore();
   const roundCount = ammo.roundCount ?? 0;
-  const isLow = roundCount < 50;
+  const isLow = lowStockWarningsEnabled && roundCount < lowStockThreshold;
 
   return (
     <Card>
@@ -76,6 +78,7 @@ export function AmmoCard({
             {/* Round count and PPR */}
             <div className="flex items-center gap-2">
               <Badge variant={isLow ? 'destructive' : 'secondary'}>
+                {isLow && <AlertTriangle className="h-3 w-3 mr-1" />}
                 {roundCount.toLocaleString()} rounds
               </Badge>
               {averagePPR !== undefined && averagePPR > 0 && (
