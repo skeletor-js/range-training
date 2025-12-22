@@ -10,6 +10,7 @@ import {
   DisplaySettingsCard,
   AboutCard,
   ThemeSettingsCard,
+  SessionTemplatesCard,
 } from '@/components/settings';
 
 interface DatabaseStats {
@@ -148,6 +149,8 @@ export function Settings() {
       </div>
 
       <ThemeSettingsCard />
+
+      <SessionTemplatesCard />
 
       <DisplaySettingsCard
         highGlareMode={highGlareMode}

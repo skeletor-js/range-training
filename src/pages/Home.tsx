@@ -12,13 +12,18 @@ import {
 import { ActivityHeatmap } from '@/components/sessions/ActivityHeatmap';
 import { SessionCard } from '@/components/sessions/SessionCard';
 import { QuickSessionDialog } from '@/components/sessions/QuickSessionDialog';
+import { TrainingRecommendations } from '@/components/training/TrainingRecommendations';
+import { PerformanceInsights } from '@/components/sessions/PerformanceInsights';
 import { useSessionStore } from '@/stores/sessionStore';
+import { useRecommendationStore } from '@/stores/recommendationStore';
 import type { HeatmapDataPoint, DashboardStats } from '@/types';
 
 export function Home() {
   const navigate = useNavigate();
   const { sessions, loadSessions, getHeatmapData, getDashboardStats, startSession, quickSaveSession } =
     useSessionStore();
+  const { recommendations, recentTargets, isLoading: recommendationsLoading, loadRecommendations } =
+    useRecommendationStore();
 
   const [heatmapData, setHeatmapData] = useState<HeatmapDataPoint[]>([]);
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -32,13 +37,14 @@ export function Home() {
       const [heatmap, dashStats] = await Promise.all([
         getHeatmapData(),
         getDashboardStats(),
+        loadRecommendations(),
       ]);
       setHeatmapData(heatmap);
       setStats(dashStats);
       setIsLoading(false);
     }
     loadData();
-  }, [loadSessions, getHeatmapData, getDashboardStats]);
+  }, [loadSessions, getHeatmapData, getDashboardStats, loadRecommendations]);
 
   const handleStartSession = () => {
     startSession();
@@ -155,10 +161,30 @@ export function Home() {
         </div>
       )}
 
+      {/* Performance Insights */}
+      {recentTargets.length > 0 && (
+        <div className="mb-6">
+          <PerformanceInsights
+            targets={recentTargets}
+            isLoading={recommendationsLoading}
+          />
+        </div>
+      )}
+
       {/* Activity Heatmap */}
       <div className="mb-6">
         <ActivityHeatmap data={heatmapData} />
       </div>
+
+      {/* Training Recommendations */}
+      {stats && stats.totalSessions > 0 && (
+        <div className="mb-6">
+          <TrainingRecommendations
+            recommendations={recommendations}
+            isLoading={recommendationsLoading}
+          />
+        </div>
+      )}
 
       {/* Recent Sessions */}
       <div>

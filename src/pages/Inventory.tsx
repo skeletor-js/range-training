@@ -12,8 +12,12 @@ import { AmmoPurchaseForm } from '@/components/inventory/AmmoPurchaseForm';
 import { PurchaseHistorySheet } from '@/components/inventory/PurchaseHistorySheet';
 import { CompatibilityForm } from '@/components/inventory/CompatibilityForm';
 import { CompatibilityList } from '@/components/inventory/CompatibilityList';
+import { RangeList } from '@/components/inventory/RangeList';
+import { RangeForm } from '@/components/inventory/RangeForm';
 import { useInventoryStore } from '@/stores/inventoryStore';
+import { useRangeStore } from '@/stores/rangeStore';
 import type { Firearm, Ammo, FirearmAmmoCompatibility } from '@/types';
+import type { Range } from '@/db/schema';
 import type { FirearmFormData, AmmoFormData, AmmoPurchaseFormData } from '@/lib/validations';
 
 export function Inventory() {
@@ -35,6 +39,16 @@ export function Inventory() {
     clearError,
   } = useInventoryStore();
 
+  const {
+    ranges,
+    isLoading: rangesLoading,
+    loadRanges,
+    addRange,
+    updateRange,
+    deleteRange,
+    toggleFavorite,
+  } = useRangeStore();
+
   const [activeTab, setActiveTab] = useState('firearms');
 
   // Firearm state
@@ -55,11 +69,17 @@ export function Inventory() {
   const [showCompatibilityForm, setShowCompatibilityForm] = useState(false);
   const [editingCompatibility, setEditingCompatibility] = useState<FirearmAmmoCompatibility | null>(null);
 
+  // Range state
+  const [showRangeForm, setShowRangeForm] = useState(false);
+  const [editingRange, setEditingRange] = useState<Range | null>(null);
+  const [deletingRange, setDeletingRange] = useState<Range | null>(null);
+
   // Load data on mount
   useEffect(() => {
     loadFirearms();
     loadAmmo();
-  }, [loadFirearms, loadAmmo]);
+    loadRanges();
+  }, [loadFirearms, loadAmmo, loadRanges]);
 
   // Clear error when switching tabs
   useEffect(() => {
@@ -159,6 +179,64 @@ export function Inventory() {
     }
   };
 
+  // Range handlers
+  const handleAddRange = () => {
+    setEditingRange(null);
+    setShowRangeForm(true);
+  };
+
+  const handleEditRange = (range: Range) => {
+    setEditingRange(range);
+    setShowRangeForm(true);
+  };
+
+  const handleSaveRange = async (data: Parameters<typeof addRange>[0]) => {
+    if (editingRange) {
+      await updateRange(editingRange.id, data);
+    } else {
+      await addRange(data);
+    }
+  };
+
+  const handleConfirmDeleteRange = async () => {
+    if (deletingRange) {
+      await deleteRange(deletingRange.id);
+      setDeletingRange(null);
+    }
+  };
+
+  const handleToggleFavorite = async (range: Range) => {
+    await toggleFavorite(range.id);
+  };
+
+  // Determine what to show in the Add button
+  const getAddButtonLabel = () => {
+    switch (activeTab) {
+      case 'firearms':
+        return 'Weapon';
+      case 'ammo':
+        return 'Ammo';
+      case 'ranges':
+        return 'Range';
+      default:
+        return '';
+    }
+  };
+
+  const handleAddClick = () => {
+    switch (activeTab) {
+      case 'firearms':
+        handleAddFirearm();
+        break;
+      case 'ammo':
+        handleAddAmmo();
+        break;
+      case 'ranges':
+        handleAddRange();
+        break;
+    }
+  };
+
   return (
     <div className="container max-w-2xl mx-auto px-4 py-8">
       <PageHeader
@@ -177,18 +255,16 @@ export function Inventory() {
           <TabsList>
             <TabsTrigger value="firearms">Weapons</TabsTrigger>
             <TabsTrigger value="ammo">Ammo</TabsTrigger>
+            <TabsTrigger value="ranges">Ranges</TabsTrigger>
           </TabsList>
 
-          <Button
-            size="sm"
-            onClick={activeTab === 'firearms' ? handleAddFirearm : handleAddAmmo}
-          >
+          <Button size="sm" onClick={handleAddClick}>
             <Plus className="h-4 w-4 mr-1" />
-            Add {activeTab === 'firearms' ? 'Weapon' : 'Ammo'}
+            Add {getAddButtonLabel()}
           </Button>
         </div>
 
-        {isLoading ? (
+        {isLoading || rangesLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
@@ -213,6 +289,16 @@ export function Inventory() {
                 onViewHistory={handleViewHistory}
                 onAdd={handleAddAmmo}
                 onViewCompatibility={handleViewAmmoCompatibility}
+              />
+            </TabsContent>
+
+            <TabsContent value="ranges" className="mt-0">
+              <RangeList
+                ranges={ranges}
+                onEdit={handleEditRange}
+                onDelete={setDeletingRange}
+                onToggleFavorite={handleToggleFavorite}
+                onAdd={handleAddRange}
               />
             </TabsContent>
           </>
@@ -304,6 +390,25 @@ export function Inventory() {
         ammo={compatibilityAmmo ?? undefined}
         existing={editingCompatibility ?? undefined}
         onSave={handleCompatibilitySaved}
+      />
+
+      {/* Range Form Sheet */}
+      <RangeForm
+        open={showRangeForm}
+        onOpenChange={setShowRangeForm}
+        range={editingRange}
+        onSave={handleSaveRange}
+      />
+
+      {/* Range Delete Confirmation */}
+      <ConfirmDialog
+        open={!!deletingRange}
+        onOpenChange={(open) => !open && setDeletingRange(null)}
+        title="Delete Range"
+        description={`Are you sure you want to delete "${deletingRange?.name}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        variant="destructive"
+        onConfirm={handleConfirmDeleteRange}
       />
     </div>
   );

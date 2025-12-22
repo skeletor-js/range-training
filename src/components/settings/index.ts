@@ -6,3 +6,4 @@ export { AboutCard } from './AboutCard';
 export { ThemeSettingsCard } from './ThemeSettingsCard';
 export { ColorPicker } from './ColorPicker';
 export { ThemePreview } from './ThemePreview';
+export { SessionTemplatesCard } from './SessionTemplatesCard';

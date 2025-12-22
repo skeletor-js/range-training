@@ -150,5 +150,61 @@ export async function runMigrations(fromVersion: number, toVersion: number): Pro
     console.log('[DB] Platform column added to drills');
   }
 
+  // v7 -> v8: Add ranges table for saved locations
+  if (fromVersion < 8) {
+    console.log('[DB] Applying migration v8: Adding ranges table');
+
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS ranges (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        address TEXT,
+        city TEXT,
+        state TEXT,
+        phone TEXT,
+        website TEXT,
+        range_type TEXT CHECK(range_type IN ('indoor', 'outdoor', 'both')),
+        max_distance INTEGER,
+        notes TEXT,
+        is_favorite INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_ranges_favorite ON ranges(is_favorite)`);
+
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (8)`);
+    console.log('[DB] Ranges table created');
+  }
+
+  // v8 -> v9: Add session_templates table
+  if (fromVersion < 9) {
+    console.log('[DB] Applying migration v9: Adding session_templates table');
+
+    await db.run(sql`
+      CREATE TABLE IF NOT EXISTS session_templates (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        location TEXT,
+        range_id TEXT REFERENCES ranges(id),
+        firearm_ids TEXT,
+        ammo_presets TEXT,
+        default_notes TEXT,
+        is_favorite INTEGER DEFAULT 0,
+        usage_count INTEGER DEFAULT 0,
+        last_used_at TEXT,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+
+    await db.run(sql`CREATE INDEX IF NOT EXISTS idx_session_templates_favorite ON session_templates(is_favorite)`);
+
+    await db.run(sql`INSERT INTO schema_version (version) VALUES (9)`);
+    console.log('[DB] Session templates table created');
+  }
+
   console.log('[DB] Migrations complete');
 }

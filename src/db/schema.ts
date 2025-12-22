@@ -214,6 +214,40 @@ export const malfunctions = sqliteTable('malfunctions', {
   createdAt: text('created_at').default(sql`(datetime('now'))`),
 });
 
+// Saved Range Locations
+export const ranges = sqliteTable('ranges', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  address: text('address'),
+  city: text('city'),
+  state: text('state'),
+  phone: text('phone'),
+  website: text('website'),
+  rangeType: text('range_type', { enum: ['indoor', 'outdoor', 'both'] }),
+  maxDistance: integer('max_distance'), // yards
+  notes: text('notes'),
+  isFavorite: integer('is_favorite', { mode: 'boolean' }).default(false),
+  createdAt: text('created_at').default(sql`(datetime('now'))`),
+  updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
+// Session Templates for quick session setup
+export const sessionTemplates = sqliteTable('session_templates', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  location: text('location'),
+  rangeId: text('range_id').references(() => ranges.id),
+  firearmIds: text('firearm_ids'), // JSON array of firearm IDs
+  ammoPresets: text('ammo_presets'), // JSON array of {firearmId, ammoId, rounds}
+  defaultNotes: text('default_notes'),
+  isFavorite: integer('is_favorite', { mode: 'boolean' }).default(false),
+  usageCount: integer('usage_count').default(0),
+  lastUsedAt: text('last_used_at'),
+  createdAt: text('created_at').default(sql`(datetime('now'))`),
+  updatedAt: text('updated_at').default(sql`(datetime('now'))`),
+});
+
 // Schema Version for Migrations
 export const schemaVersion = sqliteTable('schema_version', {
   version: integer('version').primaryKey(),
@@ -251,3 +285,7 @@ export type FirearmAmmoCompatibility = typeof firearmAmmoCompatibility.$inferSel
 export type NewFirearmAmmoCompatibility = typeof firearmAmmoCompatibility.$inferInsert;
 export type Malfunction = typeof malfunctions.$inferSelect;
 export type NewMalfunction = typeof malfunctions.$inferInsert;
+export type Range = typeof ranges.$inferSelect;
+export type NewRange = typeof ranges.$inferInsert;
+export type SessionTemplate = typeof sessionTemplates.$inferSelect;
+export type NewSessionTemplate = typeof sessionTemplates.$inferInsert;
