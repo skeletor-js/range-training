@@ -1,18 +1,23 @@
 import { useNavigate } from 'react-router-dom';
 import { CaptureCanvas } from '@/components/capture/CaptureCanvas';
 import { useCaptureStore } from '@/stores/captureStore';
+import { useActiveSessionStore } from '@/stores/activeSessionStore';
 
 export function Capture() {
   const navigate = useNavigate();
   const { createCapturedTarget, reset } = useCaptureStore();
+  const { addTarget, activeSession, startSession } = useActiveSessionStore();
 
   const handleComplete = () => {
     const target = createCapturedTarget();
     if (target) {
-      // In a full implementation, this would add the target to the active session
-      console.log('Captured target:', target);
+      // Add target to active session (start one if needed)
+      if (!activeSession) {
+        startSession();
+      }
+      addTarget(target);
 
-      // For now, just show the metrics and reset
+      // Show metrics feedback
       const metrics = target.metrics;
       alert(
         `Target captured!\n\n` +
