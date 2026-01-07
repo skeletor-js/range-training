@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CaptureCanvas } from '@/components/capture/CaptureCanvas';
+import { CaptureSummary } from '@/components/capture/CaptureSummary';
 import { useCaptureStore } from '@/stores/captureStore';
 import { useActiveSessionStore } from '@/stores/activeSessionStore';
+import type { GroupMetrics } from '@/types';
 
 export function Capture() {
   const navigate = useNavigate();
   const { createCapturedTarget, reset } = useCaptureStore();
   const { addTarget, activeSession, startSession } = useActiveSessionStore();
+  const [showSummary, setShowSummary] = useState(false);
+  const [metrics, setMetrics] = useState<GroupMetrics | null>(null);
 
   const handleComplete = () => {
     const target = createCapturedTarget();
@@ -18,18 +23,15 @@ export function Capture() {
       addTarget(target);
 
       // Show metrics feedback
-      const metrics = target.metrics;
-      alert(
-        `Target captured!\n\n` +
-        `Shots: ${metrics.shotCount}\n` +
-        `Group Size: ${metrics.extremeSpread.toFixed(2)}" (${metrics.groupSizeMoa.toFixed(2)} MOA)\n` +
-        `Mean Radius: ${metrics.meanRadius.toFixed(2)}"\n` +
-        `Center Offset: ${metrics.groupCenterX.toFixed(2)}", ${metrics.groupCenterY.toFixed(2)}"`
-      );
-
-      reset();
-      navigate(-1);
+      setMetrics(target.metrics);
+      setShowSummary(true);
     }
+  };
+
+  const handleSummaryClose = () => {
+    setShowSummary(false);
+    reset();
+    navigate(-1);
   };
 
   const handleCancel = () => {
@@ -40,6 +42,15 @@ export function Capture() {
   return (
     <div className="fixed inset-0 bg-background z-50">
       <CaptureCanvas onComplete={handleComplete} onCancel={handleCancel} />
+      <CaptureSummary
+        open={showSummary}
+        onOpenChange={(open) => {
+          if (!open) handleSummaryClose();
+          setShowSummary(open);
+        }}
+        metrics={metrics}
+        onClose={handleSummaryClose}
+      />
     </div>
   );
 }
