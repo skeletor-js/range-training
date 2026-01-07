@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useCaptureStore } from '@/stores/captureStore';
 import { ImagePicker } from './ImagePicker';
@@ -6,6 +6,7 @@ import { CaptureToolbar } from './CaptureToolbar';
 import { CalibrationOverlay } from './CalibrationOverlay';
 import { PoaMarker } from './PoaMarker';
 import { ShotMarker } from './ShotMarker';
+import { CalibrationMarker } from './CalibrationMarker';
 import type { TargetPreset } from '@/lib/constants';
 
 interface CaptureCanvasProps {
@@ -15,6 +16,7 @@ interface CaptureCanvasProps {
 
 export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
   const transformRef = useRef<{ state: { scale: number } } | null>(null);
+  const [activeCalibrationPoint, setActiveCalibrationPoint] = useState<1 | 2 | null>(null);
 
   const {
     mode,
@@ -25,6 +27,8 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
     poaPixelX,
     poaPixelY,
     shotsPixels,
+    customPoint1,
+    customPoint2,
     setImage,
     setMode,
     setDistanceYards,
@@ -54,22 +58,19 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
   );
 
   const handleCustomCalibrate = useCallback(
-    (
-      point1: { x: number; y: number },
-      point2: { x: number; y: number },
-      inches: number
-    ) => {
-      setCustomCalibrationPoint(1, point1.x, point1.y);
-      setCustomCalibrationPoint(2, point2.x, point2.y);
+    (inches: number) => {
       setCustomRefInches(inches);
-      applyCustomCalibration();
+      const success = applyCustomCalibration();
+      if (success) {
+        setActiveCalibrationPoint(null);
+      }
     },
-    [setCustomCalibrationPoint, setCustomRefInches, applyCustomCalibration]
+    [setCustomRefInches, applyCustomCalibration]
   );
 
   const handleCanvasClick = useCallback(
     (e: React.MouseEvent<SVGSVGElement>) => {
-      if (mode !== 'setting-poa' && mode !== 'marking-shots') return;
+      if (mode !== 'setting-poa' && mode !== 'marking-shots' && mode !== 'calibrating') return;
 
       const svg = e.currentTarget;
       const rect = svg.getBoundingClientRect();
@@ -83,13 +84,16 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
       const imageX = x / scale;
       const imageY = y / scale;
 
-      if (mode === 'setting-poa') {
+      if (mode === 'calibrating' && activeCalibrationPoint) {
+        setCustomCalibrationPoint(activeCalibrationPoint, imageX, imageY);
+        setActiveCalibrationPoint(null);
+      } else if (mode === 'setting-poa') {
         setPoa(imageX, imageY);
       } else if (mode === 'marking-shots') {
         addShot(imageX, imageY);
       }
     },
-    [mode, setPoa, addShot]
+    [mode, activeCalibrationPoint, setCustomCalibrationPoint, setPoa, addShot]
   );
 
   const handleBack = useCallback(() => {
@@ -99,9 +103,11 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
     } else if (mode === 'setting-poa') {
       // Go back to calibration
       setMode('calibrating');
+      setActiveCalibrationPoint(null);
     } else if (mode === 'calibrating') {
       // Clear image and go back to idle
       reset();
+      setActiveCalibrationPoint(null);
     } else {
       onCancel();
     }
@@ -160,7 +166,7 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
         minScale={0.5}
         maxScale={5}
         centerOnInit
-        disabled={mode === 'calibrating'}
+        disabled={mode === 'calibrating' && !!activeCalibrationPoint}
         onTransformed={(ref) => {
           transformRef.current = ref;
         }}
@@ -190,9 +196,33 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
               className="absolute top-0 left-0"
               width={imageWidth}
               height={imageHeight}
-              style={{ touchAction: 'none' }}
+              style={{ touchAction: 'none', pointerEvents: 'auto' }}
               onClick={handleCanvasClick}
             >
+              {/* Calibration Markers */}
+              {mode === 'calibrating' && (
+                <>
+                  {customPoint1 && (
+                    <CalibrationMarker
+                      x={customPoint1.x}
+                      y={customPoint1.y}
+                      label="1"
+                      scale={currentScale}
+                      active={activeCalibrationPoint === 1}
+                    />
+                  )}
+                  {customPoint2 && (
+                    <CalibrationMarker
+                      x={customPoint2.x}
+                      y={customPoint2.y}
+                      label="2"
+                      scale={currentScale}
+                      active={activeCalibrationPoint === 2}
+                    />
+                  )}
+                </>
+              )}
+
               {/* POA Marker */}
               {poaPixelX !== null && poaPixelY !== null && (
                 <PoaMarker x={poaPixelX} y={poaPixelY} scale={currentScale} />
@@ -226,6 +256,10 @@ export function CaptureCanvas({ onComplete, onCancel }: CaptureCanvasProps) {
           onPresetCalibrate={handlePresetCalibrate}
           onCustomCalibrate={handleCustomCalibrate}
           onCancel={() => reset()}
+          customPoint1={customPoint1}
+          customPoint2={customPoint2}
+          activePoint={activeCalibrationPoint}
+          onPointSelect={setActiveCalibrationPoint}
         />
       )}
     </div>
