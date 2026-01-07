@@ -1,7 +1,27 @@
 {
   "name": "range-app",
-  "private": true,
   "version": "0.1.0",
+  "description": "A privacy-first Progressive Web Application for recreational shooters to track range sessions, manage ammunition inventory, and analyze shooting performance.",
+  "author": "Jordan Stella",
+  "license": "Apache-2.0 WITH Commons-Clause",
+  "homepage": "https://range-app.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jordanstella/range-training.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jordanstella/range-training/issues"
+  },
+  "keywords": [
+    "shooting",
+    "range",
+    "firearms",
+    "ammunition",
+    "pwa",
+    "offline",
+    "privacy",
+    "tracking"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",

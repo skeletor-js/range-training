@@ -143,7 +143,11 @@ From the Settings page:
 
 ## License
 
-Private project. All rights reserved.
+This project is licensed under the [Apache License 2.0](LICENSE) with the [Commons Clause](https://commonsclause.com/) restriction.
+
+You are free to use, modify, and distribute this software, but you may not sell it as a hosted service.
+
+See [LICENSE](LICENSE) for full details.
 
 ---
 
