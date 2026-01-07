@@ -1,6 +1,12 @@
 # Range App
 
-A privacy-first Progressive Web Application (PWA) for recreational shooters to track range sessions, manage ammunition inventory, document target performance with precision shot analysis, and measure improvement over time.
+[![License](https://img.shields.io/badge/License-Apache_2.0_+_Commons_Clause-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
+[![PWA](https://img.shields.io/badge/PWA-enabled-purple.svg)](https://range-app.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6.svg)](https://www.typescriptlang.org/)
+[![Live Demo](https://img.shields.io/badge/demo-range--app.com-orange.svg)](https://range-app.com)
+
+> A privacy-first Progressive Web Application (PWA) for recreational shooters to track range sessions, manage ammunition inventory, document target performance with precision shot analysis, and measure improvement over time.
 
 ## Overview
 
