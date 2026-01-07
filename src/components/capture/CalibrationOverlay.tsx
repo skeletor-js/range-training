@@ -19,8 +19,14 @@ interface CalibrationOverlayProps {
   distanceYards: number;
   onDistanceChange: (distance: number) => void;
   onPresetCalibrate: (preset: TargetPreset, renderedPixelDimension: number) => void;
-  onCustomCalibrate: (point1: { x: number; y: number }, point2: { x: number; y: number }, inches: number) => void;
+  onCustomCalibrate: (inches: number) => void;
   onCancel: () => void;
+
+  // Custom calibration props
+  customPoint1: { x: number; y: number } | null;
+  customPoint2: { x: number; y: number } | null;
+  activePoint: 1 | 2 | null;
+  onPointSelect: (point: 1 | 2 | null) => void;
 }
 
 export function CalibrationOverlay({
@@ -31,6 +37,10 @@ export function CalibrationOverlay({
   onPresetCalibrate,
   onCustomCalibrate,
   onCancel,
+  customPoint1,
+  customPoint2,
+  activePoint,
+  onPointSelect,
 }: CalibrationOverlayProps) {
   const [calibrationMode, setCalibrationMode] = useState<'preset' | 'custom'>('preset');
   const [selectedPresetId, setSelectedPresetId] = useState<string>(TARGET_PRESETS[0].id);
@@ -38,8 +48,6 @@ export function CalibrationOverlay({
 
   // Custom calibration state
   const [customInches, setCustomInches] = useState('5.5');
-  const [customPoint1, setCustomPoint1] = useState<{ x: number; y: number } | null>(null);
-  const [customPoint2, setCustomPoint2] = useState<{ x: number; y: number } | null>(null);
 
   const selectedPreset = TARGET_PRESETS.find((p) => p.id === selectedPresetId);
 
@@ -59,17 +67,15 @@ export function CalibrationOverlay({
     const inches = parseFloat(customInches);
     if (isNaN(inches) || inches <= 0) return;
 
-    onCustomCalibrate(customPoint1, customPoint2, inches);
+    onCustomCalibrate(inches);
   };
 
-  // Simulate point selection for custom calibration
   const handleCustomPointClick = (pointNum: 1 | 2) => {
-    // In a real implementation, this would let the user tap on the image
-    // For now, we'll use preset positions as a simple demo
-    if (pointNum === 1) {
-      setCustomPoint1({ x: imageWidth * 0.3, y: imageHeight * 0.5 });
+    // Toggle selection mode for the point
+    if (activePoint === pointNum) {
+      onPointSelect(null);
     } else {
-      setCustomPoint2({ x: imageWidth * 0.7, y: imageHeight * 0.5 });
+      onPointSelect(pointNum);
     }
   };
 
@@ -161,21 +167,23 @@ export function CalibrationOverlay({
 
             <TabsContent value="custom" className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Set two reference points on a known measurement.
+                Tap a button below, then tap the point on the image.
               </p>
 
               <div className="grid grid-cols-2 gap-2">
                 <Button
-                  variant={customPoint1 ? 'secondary' : 'outline'}
+                  variant={activePoint === 1 ? 'default' : (customPoint1 ? 'secondary' : 'outline')}
                   onClick={() => handleCustomPointClick(1)}
+                  className={activePoint === 1 ? 'ring-2 ring-primary ring-offset-2' : ''}
                 >
-                  {customPoint1 ? 'Point 1 Set' : 'Set Point 1'}
+                  {activePoint === 1 ? 'Tap on Image...' : (customPoint1 ? 'Point 1 Set' : 'Set Point 1')}
                 </Button>
                 <Button
-                  variant={customPoint2 ? 'secondary' : 'outline'}
+                  variant={activePoint === 2 ? 'default' : (customPoint2 ? 'secondary' : 'outline')}
                   onClick={() => handleCustomPointClick(2)}
+                  className={activePoint === 2 ? 'ring-2 ring-primary ring-offset-2' : ''}
                 >
-                  {customPoint2 ? 'Point 2 Set' : 'Set Point 2'}
+                  {activePoint === 2 ? 'Tap on Image...' : (customPoint2 ? 'Point 2 Set' : 'Set Point 2')}
                 </Button>
               </div>
 
