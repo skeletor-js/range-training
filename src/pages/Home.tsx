@@ -48,7 +48,7 @@ export function Home() {
 
   const handleStartSession = () => {
     startSession();
-    navigate('/capture');
+    navigate('/sessions/live');
   };
 
   const handleQuickSave = async (data: { date: string; location?: string; notes?: string; weather?: string }) => {

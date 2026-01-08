@@ -28,9 +28,7 @@ export function Sessions() {
 
   const handleStartSession = () => {
     startSession();
-    // For now, just navigate to capture to test the flow
-    // In a full implementation, we'd have a session detail page
-    navigate('/capture');
+    navigate('/sessions/live');
   };
 
   const handleSelectSession = (session: Session) => {

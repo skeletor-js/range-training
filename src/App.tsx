@@ -19,6 +19,7 @@ const Inventory = lazy(() => import('@/pages/Inventory').then(m => ({ default: m
 const Settings = lazy(() => import('@/pages/Settings').then(m => ({ default: m.Settings })));
 const Capture = lazy(() => import('@/pages/Capture').then(m => ({ default: m.Capture })));
 const SessionDetail = lazy(() => import('@/pages/SessionDetail').then(m => ({ default: m.SessionDetail })));
+const ActiveSession = lazy(() => import('@/pages/ActiveSession').then(m => ({ default: m.ActiveSession })));
 
 
 function Navigation() {
@@ -86,6 +87,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sessions" element={<Sessions />} />
+            <Route path="/sessions/live" element={<ActiveSession />} />
             <Route path="/sessions/:id" element={<SessionDetail />} />
             <Route path="/training" element={<Training />} />
             <Route path="/drills/:id" element={<DrillDetail />} />
